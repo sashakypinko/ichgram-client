@@ -13,7 +13,7 @@ interface Props {
 }
 
 const ConversationList: FC<Props> = ({ minified }) => {
-  const { conversations, currentConversation, loading } = useAppSelector(selectConversation);
+  const { conversations, currentConversation } = useAppSelector(selectConversation);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

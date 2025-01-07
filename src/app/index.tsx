@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import theme from './configs/theme';

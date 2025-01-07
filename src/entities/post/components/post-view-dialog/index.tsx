@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Dialog as MuiDialog, Divider, Grid, styled, Typography, Box } from '@mui/material';
+import { Dialog as MuiDialog, Grid, styled, Typography, Box } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
@@ -11,11 +11,20 @@ import { Size } from '@shared/enums/size.enum';
 import CommentList from '@entities/comment/components/comment-list';
 import PostFeedbackActions from '@entities/post/components/post-feedback-actions';
 import CommentInput from '@entities/comment/components/comment-input';
+import PostActions from '@entities/post/components/post-actions';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
     borderRadius: 12,
   },
+});
+
+const Header = styled(Box)({
+  padding: 16,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid #DBDBDB',
 });
 
 const PostViewDialog: FC = () => {
@@ -44,9 +53,15 @@ const PostViewDialog: FC = () => {
           />
         </Grid>
         <Grid display="flex" flexDirection="column" item xs={12} md={6}>
-          <Box padding={2}>
+          <Header>
+            <Box display="flex" alignItems="center" gap={2}>
+              <UserAvatar user={selectedPost.author} withUsername />
+              <FollowUserAction user={selectedPost.author} />
+            </Box>
+            <PostActions post={selectedPost} />
+          </Header>
+          <Box display="flex" gap={3} padding={2}>
             <UserAvatar user={selectedPost.author} withUsername />
-            <FollowUserAction user={selectedPost.author} />
             <Typography>{selectedPost.content}</Typography>
           </Box>
           <Box padding={2} flexGrow={1}>

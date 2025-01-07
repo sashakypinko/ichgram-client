@@ -4,17 +4,25 @@ import { selectPost } from '@entities/post/store/selectors';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectUser } from '@entities/user/store/selectors';
 import { getUserPosts } from '@entities/post/store/slice';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
 
 const ProfilePosts: FC = () => {
   const { selectedUser } = useAppSelector(selectUser);
-  const { userPosts } = useAppSelector(selectPost);
+  const { userPosts, createLoading, updateLoading, removeLoading } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
+  const authUser = useAuthUser();
 
   useEffect(() => {
     if (selectedUser) {
       dispatch(getUserPosts({ userId: selectedUser._id }));
     }
   }, [selectedUser?._id]);
+
+  useEffect(() => {
+    if (selectedUser?._id && selectedUser._id === authUser?._id && !createLoading && !updateLoading && !removeLoading) {
+      dispatch(getUserPosts({ userId: selectedUser._id }));
+    }
+  }, [createLoading, updateLoading, removeLoading]);
 
   return <PostList posts={userPosts} />;
 };

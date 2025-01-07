@@ -16,7 +16,7 @@ const InputContainer = styled(Box)(({ theme }) => ({
   borderColor: theme.palette.text.disabled,
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledTextField = styled(TextField)({
   '& .MuiInputBase-root': {
     padding: 0,
 
@@ -29,7 +29,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
       padding: '0 40px',
     },
   },
-}));
+});
 
 interface Props {
   conversationId: string;

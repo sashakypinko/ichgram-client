@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Box, IconButton, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { ThumbnailComponentProps } from '@shared/components/thumbnail';
 import { TextSnippetRounded } from '@mui/icons-material';
 
@@ -10,7 +10,7 @@ const FileBox = styled(Box)({
   height: '100%',
 });
 
-const File: FC<ThumbnailComponentProps> = ({ source }) => {
+const File: FC<ThumbnailComponentProps> = () => {
   return (
     <FileBox>
       <TextSnippetRounded fontSize="large" />

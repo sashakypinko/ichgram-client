@@ -125,6 +125,8 @@ const slice = createSlice({
   initialState,
   reducers: {
     openPostFormDialog: (state: PostState, action: PayloadAction<IPost | undefined>) => {
+      state.postViewDialogOpened = false;
+      state.selectedPost = null;
       state.postFormDialogOpened = true;
       state.editablePost = action.payload || null;
     },

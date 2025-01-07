@@ -1,5 +1,4 @@
 import ApiService from '../../../app/services/api-service';
-import { AxiosResponse } from 'axios';
 import { IUser } from '@entities/user/model/user';
 import { AuthData, ResetPasswordData, SignUpData, UserCredentials } from '../types';
 

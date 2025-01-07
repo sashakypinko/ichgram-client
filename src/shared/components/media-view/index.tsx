@@ -53,7 +53,8 @@ const MediaView: FC<Props> = ({ mediaId = null, mediaUrl = '', sx, size = Size.S
 
     setLoading(true);
     try {
-      const response = await fetch(originalMediaUrl, { method: 'HEAD' });
+      const isBlob = originalMediaUrl.startsWith('blob');
+      const response = await fetch(originalMediaUrl, { method: isBlob ? 'GET' : 'HEAD' });
 
       setMediaData({
         fileName: retrieveFileNameFromHeaders(response.headers),

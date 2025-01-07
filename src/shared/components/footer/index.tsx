@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { Box, Container, styled, useTheme } from '@mui/material';
+import { Container, styled } from '@mui/material';
 
 const FooterContainer = styled(Container)(({ theme }) => ({
   marginTop: 80,
@@ -8,8 +8,6 @@ const FooterContainer = styled(Container)(({ theme }) => ({
 }));
 
 const Footer = (): ReactElement => {
-  const theme = useTheme();
-
   return <FooterContainer maxWidth="xl"></FooterContainer>;
 };
 

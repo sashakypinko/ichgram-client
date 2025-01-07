@@ -1,4 +1,4 @@
-import React, { type ReactElement, useMemo } from 'react';
+import { type ReactElement, useMemo } from 'react';
 import { Navigate, Route, Routes as CommonRoutes } from 'react-router-dom';
 import { type RouteInterface } from './interfaces/route.interface';
 import { RouteEnum } from './enums/route.enum';
