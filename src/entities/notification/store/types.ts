@@ -1,8 +1,9 @@
-import { IUser } from '@entities/user/model/user';
+import { INotification } from '@entities/notification/model/notification';
 
 export interface NotificationState {
-  notifications: IUser[];
+  notifications: INotification[];
   openedOverlay: boolean;
   loading: boolean;
+  viewing: boolean;
   error: string | null;
 }

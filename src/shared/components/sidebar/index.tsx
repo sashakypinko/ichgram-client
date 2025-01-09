@@ -10,13 +10,14 @@ import { matchRoute } from '@shared/helpers/url-helper';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import useUserOverlay from '@entities/user/hooks/use-user-overlay.hook';
 import useNotificationOverlay from '@entities/notification/hooks/use-notification-overlay.hook';
-import useUnreadCount from '@entities/conversation/hooks/use-unread-count.hook';
+import useUnreadMessagesCount from '@entities/conversation/hooks/use-unread-messages-count.hook';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import { useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
 import { openPostFormDialog } from '@entities/post/store/slice';
+import useUnreadNotificationsCount from '@entities/notification/hooks/use-unread-notifications-count.hook';
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
   minWidth: 240,
@@ -54,7 +55,8 @@ export interface SidebarLinkProps {
 
 const Sidebar: FC = () => {
   const authUser = useAuthUser();
-  const unreadCount = useUnreadCount();
+  const unreadMessagesCount = useUnreadMessagesCount();
+  const unreadNotificationsCount = useUnreadNotificationsCount();
   const { opened: userOverlayOpened, show: showUserOverlay } = useUserOverlay();
   const { opened: notificationOverlayOpened, show: showNotificationOverlay } = useNotificationOverlay();
   const { postFormDialogOpened } = useAppSelector(selectPost);
@@ -91,7 +93,7 @@ const Sidebar: FC = () => {
         active: !overlayOpened && matchRoute(RouteEnum.DIRECT),
         hidden: isSm,
         Icon: (props) => (
-          <Badge badgeContent={unreadCount} color="error">
+          <Badge badgeContent={unreadMessagesCount} color="error">
             <Message {...props} />
           </Badge>
         ),
@@ -101,7 +103,11 @@ const Sidebar: FC = () => {
         active: notificationOverlayOpened,
         onClick: showNotificationOverlay,
         hidden: isSm,
-        Icon: Like,
+        Icon: (props) => (
+          <Badge badgeContent={unreadNotificationsCount} color="error">
+            <Like {...props} />
+          </Badge>
+        ),
       },
       {
         label: 'Create',
@@ -116,7 +122,7 @@ const Sidebar: FC = () => {
         Icon: () => <UserAvatar user={authUser} withoutLink />,
       },
     ],
-    [location, overlayOpened, isSm, unreadCount, postFormDialogOpened],
+    [location, overlayOpened, isSm, unreadNotificationsCount, unreadMessagesCount, postFormDialogOpened],
   );
 
   if (!authUser) return null;

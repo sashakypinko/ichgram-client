@@ -2,9 +2,9 @@ import { FC, useState } from 'react';
 import { Dialog as MuiDialog, styled, Box, IconButton } from '@mui/material';
 import { useAppDispatch } from '@app/hooks';
 import { MoreHoriz } from '@mui/icons-material';
-import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
-import { openPostFormDialog, removePost } from '@entities/post/store/slice.ts';
-import { IPost } from '@entities/post/model/post.ts';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
+import { openPostFormDialog, removePost } from '@entities/post/store/slice';
+import { IPost } from '@entities/post/model/post';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {

@@ -17,6 +17,7 @@ import FollowersDialog from '@entities/user/components/followers-dialog';
 import FollowingDialog from '@entities/user/components/following-dialog';
 import PostFormDialog from '@entities/post/components/post-form-dialog';
 import PostViewDialog from '@entities/post/components/post-view-dialog';
+import { getNotifications } from '@entities/notification/store/slice';
 
 import '@fontsource/montserrat/400.css';
 import '@fontsource/montserrat/500.css';
@@ -37,6 +38,7 @@ const App: FC = () => {
   useEffect(() => {
     if (authUser) {
       dispatch(getConversations());
+      dispatch(getNotifications({}));
     }
   }, [authUser]);
 

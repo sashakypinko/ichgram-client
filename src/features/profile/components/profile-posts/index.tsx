@@ -4,7 +4,7 @@ import { selectPost } from '@entities/post/store/selectors';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectUser } from '@entities/user/store/selectors';
 import { getUserPosts } from '@entities/post/store/slice';
-import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 
 const ProfilePosts: FC = () => {
   const { selectedUser } = useAppSelector(selectUser);

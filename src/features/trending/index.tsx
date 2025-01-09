@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
 import PostList from '@entities/post/components/post-list';
-import { useAppDispatch, useAppSelector } from '@app/hooks.ts';
-import { selectPost } from '@entities/post/store/selectors.ts';
-import { getTrendingPosts } from '@entities/post/store/slice.ts';
+import { useAppDispatch, useAppSelector } from '@app/hooks';
+import { selectPost } from '@entities/post/store/selectors';
+import { getTrendingPosts } from '@entities/post/store/slice';
 
 const Trending: FC = () => {
   const { trendingPosts } = useAppSelector(selectPost);

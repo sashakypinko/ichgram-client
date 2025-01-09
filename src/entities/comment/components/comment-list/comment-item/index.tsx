@@ -6,7 +6,8 @@ import UserAvatar from '@entities/user/components/user-avatar';
 import { FavoriteBorderRounded, FavoriteRounded } from '@mui/icons-material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { useAppDispatch } from '@app/hooks';
-import { toggleCommentLike } from '@entities/comment/store/slice';
+import { removeComment, toggleCommentLike } from '@entities/comment/store/slice';
+import { Trash } from '@shared/components/icons';
 
 interface Props {
   comment: IComment;
@@ -18,6 +19,12 @@ const CommentItem: FC<Props> = ({ comment }) => {
 
   const toggleLike = () => {
     dispatch(toggleCommentLike(comment._id));
+  };
+
+  const deleteComment = () => {
+    dispatch(removeComment({
+      payload: comment._id,
+    }));
   };
 
   const commentDate = formatDistanceToNow(comment.createdAt);
@@ -37,6 +44,9 @@ const CommentItem: FC<Props> = ({ comment }) => {
           <Typography>{commentDate}</Typography>
           <Typography>Likes: {comment.likedBy.length}</Typography>
         </Box>
+        <IconButton size="small" color="error" onClick={deleteComment}>
+          <Trash />
+        </IconButton>
         <IconButton size="small" onClick={toggleLike}>
           <LikeIcon color={liked ? 'error' : 'inherit'} fontSize="small" />
         </IconButton>
