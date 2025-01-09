@@ -13,3 +13,5 @@ export const getOriginalMediaUrl = (mediaId: string): string => {
 export const getThumbnailMediaUrl = (mediaId: string): string => getMediaUrl(mediaId, Size.THUMBNAIL);
 
 export const getSmallMediaUrl = (mediaId: string): string => getMediaUrl(mediaId, Size.SMALL);
+
+export const getMediumMediaUrl = (mediaId: string): string => getMediaUrl(mediaId, Size.MEDIUM);
