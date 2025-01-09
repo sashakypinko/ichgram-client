@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Box, styled } from '@mui/material';
 import { IPost } from '@entities/post/model/post';
-import { getSmallMediaUrl } from '@shared/helpers/media-helper';
+import { getMediumMediaUrl } from '@shared/helpers/media-helper';
 import { useAppDispatch } from '@app/hooks';
 import { openPostViewDialog } from '@entities/post/store/slice';
 
@@ -11,7 +11,11 @@ const PostItemContainer = styled(Box)({
   cursor: 'pointer',
 });
 
-const Image = styled('img')({});
+const Image = styled('img')({
+  width: '100%',
+  aspectRatio: '1/1',
+  objectFit: 'cover',
+});
 
 interface Props {
   post: IPost;
@@ -20,7 +24,7 @@ interface Props {
 const PostItem: FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const mediaUrl = getSmallMediaUrl(post.mediaId);
+  const mediaUrl = getMediumMediaUrl(post.mediaId);
 
   return (
     <PostItemContainer onClick={() => dispatch(openPostViewDialog(post))}>
