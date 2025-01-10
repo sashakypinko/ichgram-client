@@ -47,7 +47,7 @@ const App: FC = () => {
       <SnackbarProvider>
         <CssBaseline />
         <Router>
-          <Box sx={{ display: 'flex', height: '100vh' }}>
+          <Box sx={{ display: 'flex', height: '100vh', overflowY: 'hidden' }}>
             <Sidebar />
             <Box width="100%" position="relative" flexGrow={1}>
               <UserOverlayPanel />

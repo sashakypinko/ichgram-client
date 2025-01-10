@@ -2,27 +2,25 @@ import { FC, useEffect } from 'react';
 import PostList from '@entities/post/components/post-list';
 import { selectPost } from '@entities/post/store/selectors';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
-import { selectUser } from '@entities/user/store/selectors';
-import { getUserPosts } from '@entities/post/store/slice';
-import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
+import { getSelectedPost, openPostViewDialog } from '@entities/post/store/slice';
+import { fetchGetParam } from '@shared/helpers/url-helper';
 
 const ProfilePosts: FC = () => {
-  const { selectedUser } = useAppSelector(selectUser);
-  const { userPosts, createLoading, updateLoading, removeLoading } = useAppSelector(selectPost);
+  const { userPosts } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
-  const authUser = useAuthUser();
+  const openPostId = fetchGetParam('postId');
 
   useEffect(() => {
-    if (selectedUser) {
-      dispatch(getUserPosts({ userId: selectedUser._id }));
-    }
-  }, [selectedUser?._id]);
+    if (openPostId) {
+      const post = userPosts.find(({ _id }) => openPostId === _id);
 
-  useEffect(() => {
-    if (selectedUser?._id && selectedUser._id === authUser?._id && !createLoading && !updateLoading && !removeLoading) {
-      dispatch(getUserPosts({ userId: selectedUser._id }));
+      if (post) {
+        dispatch(openPostViewDialog(post));
+      } else {
+        dispatch(getSelectedPost(openPostId));
+      }
     }
-  }, [createLoading, updateLoading, removeLoading]);
+  }, [openPostId, userPosts]);
 
   return <PostList posts={userPosts} />;
 };

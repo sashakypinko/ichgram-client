@@ -8,6 +8,7 @@ export interface PostState {
   postViewDialogOpened: boolean;
   postFormDialogOpened: boolean;
   editablePost: IPost | null;
+  getSelectedLoading: boolean;
   fetchLoading: boolean;
   createLoading: boolean;
   updateLoading: boolean;

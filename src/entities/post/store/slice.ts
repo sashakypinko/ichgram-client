@@ -3,7 +3,7 @@ import { PostState } from './types';
 import { IPost } from '@entities/post/model/post';
 import { CreatePostData, UpdatePostData } from '@entities/post/types';
 import { PostApi } from '@entities/post/services/post-service';
-import { ActionWithCallbacks } from '@app/store';
+import { ActionWithCallbacks, PayloadWithLazyLoad } from '@app/store';
 import { FormikErrors } from 'formik/dist/types';
 import { AxiosError } from 'axios';
 import { UserApi } from '@entities/user/services/user-service';
@@ -18,6 +18,7 @@ const initialState: PostState = {
   postFormDialogOpened: false,
   postViewDialogOpened: false,
   editablePost: null,
+  getSelectedLoading: false,
   fetchLoading: false,
   createLoading: false,
   updateLoading: false,
@@ -31,33 +32,36 @@ const syncPostsWithUpdated = (posts: IPost[], updatedPost: IPost) => {
   return [...posts.slice(0, updatedPostIdx), updatedPost, ...posts.slice(updatedPostIdx + 1)];
 };
 
-export const getUserPosts = createAsyncThunk<IPost[], GetPostsParams>(
+export const getUserPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, GetPostsParams>(
   'post/getUserPosts',
   async ({ userId, ...params }, { rejectWithValue }) => {
     try {
-      return UserApi.getPosts(userId, params);
+      const data = await UserApi.getPosts(userId, params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch user posts');
     }
   },
 );
 
-export const getFeedPosts = createAsyncThunk<IPost[], PaginationParams>(
+export const getFeedPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, PaginationParams>(
   'post/getFeedPosts',
   async (params, { rejectWithValue }) => {
     try {
-      return PostApi.getByFollowing(params);
+      const data = await PostApi.getByFollowing(params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch feed posts');
     }
   },
 );
 
-export const getTrendingPosts = createAsyncThunk<IPost[], PaginationParams>(
+export const getTrendingPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, PaginationParams>(
   'post/getTrendingPosts',
   async (params, { rejectWithValue }) => {
     try {
-      return PostApi.getTrending(params);
+      const data = await PostApi.getTrending(params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch trending posts');
     }
@@ -120,6 +124,17 @@ export const togglePostLike = createAsyncThunk<IPost, string>(
   },
 );
 
+export const getSelectedPost = createAsyncThunk<IPost | null, string>(
+  'post/getSelected',
+  async (postId, { rejectWithValue }) => {
+    try {
+      return PostApi.getById(postId);
+    } catch (error: unknown) {
+      return rejectWithValue('Failed to get selected post');
+    }
+  },
+);
+
 const slice = createSlice({
   name: 'post',
   initialState,
@@ -149,9 +164,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserPosts.fulfilled, (state: PostState, action: PayloadAction<IPost[]>) => {
+      .addCase(getUserPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.userPosts = action.payload;
+        state.userPosts = action.payload.append
+          ? [...state.userPosts, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getUserPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -162,9 +179,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getFeedPosts.fulfilled, (state: PostState, action: PayloadAction<IPost[]>) => {
+      .addCase(getFeedPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.feedPosts = action.payload;
+        state.feedPosts = action.payload.append
+          ? [...state.feedPosts, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getFeedPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -175,9 +194,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getTrendingPosts.fulfilled, (state: PostState, action: PayloadAction<IPost[]>) => {
+      .addCase(getTrendingPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.trendingPosts = action.payload;
+        state.trendingPosts =action.payload.append
+          ? [...state.trendingPosts, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getTrendingPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -243,6 +264,20 @@ const slice = createSlice({
         }
       })
       .addCase(togglePostLike.rejected, (state: PostState, action: PayloadAction<unknown>) => {
+        state.error = action.payload as string;
+      })
+
+      .addCase(getSelectedPost.pending, (state: PostState) => {
+        state.getSelectedLoading = true;
+        state.error = null;
+      })
+      .addCase(getSelectedPost.fulfilled, (state: PostState, action: PayloadAction<IPost | null>) => {
+        state.getSelectedLoading = false;
+        state.postViewDialogOpened = true;
+        state.selectedPost = action.payload;
+      })
+      .addCase(getSelectedPost.rejected, (state: PostState, action: PayloadAction<unknown>) => {
+        state.getSelectedLoading = false;
         state.error = action.payload as string;
       });
   },

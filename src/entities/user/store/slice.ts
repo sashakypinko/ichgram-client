@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { GetFollowersParams, GetFollowingParams, PayloadUsersWithLazyLoad, UserState } from './types';
+import { GetFollowersParams, GetFollowingParams, UserState } from './types';
 import { IUser } from '@entities/user/model/user';
 import { UserApi } from '@entities/user/services/user-service';
 import { syncAuthUser } from '@features/auth/store/slice';
-import { RootState } from '@app/store';
+import { PayloadWithLazyLoad, RootState } from '@app/store';
 
 const initialState: UserState = {
   searchedUsers: [],
@@ -25,24 +25,24 @@ export const searchUsers = createAsyncThunk<IUser[], string>('user/search', asyn
   }
 });
 
-export const getUserFollowers = createAsyncThunk<PayloadUsersWithLazyLoad, GetFollowersParams>(
+export const getUserFollowers = createAsyncThunk<PayloadWithLazyLoad<IUser>, GetFollowersParams>(
   'user/getFollowers',
   async ({ userId, ...params }, { rejectWithValue }) => {
     try {
-      const users = await UserApi.getFollowers(userId, params);
-      return { users, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.getFollowers(userId, params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch followers');
     }
   },
 );
 
-export const getUserFollowings = createAsyncThunk<PayloadUsersWithLazyLoad, GetFollowingParams>(
+export const getUserFollowings = createAsyncThunk<PayloadWithLazyLoad<IUser>, GetFollowingParams>(
   'user/getFollowings',
   async ({ userId, ...params }, { rejectWithValue }) => {
     try {
-      const users = await UserApi.getFollowings(userId, params);
-      return { users, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.getFollowings(userId, params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch followings');
     }
@@ -170,11 +170,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserFollowers.fulfilled, (state: UserState, action: PayloadAction<PayloadUsersWithLazyLoad>) => {
+      .addCase(getUserFollowers.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
         state.fetchLoading = false;
         state.searchedUsers = action.payload.append
-          ? [...state.searchedUsers, ...action.payload.users]
-          : action.payload.users;
+          ? [...state.searchedUsers, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getUserFollowers.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -185,11 +185,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserFollowings.fulfilled, (state: UserState, action: PayloadAction<PayloadUsersWithLazyLoad>) => {
+      .addCase(getUserFollowings.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
         state.fetchLoading = false;
         state.searchedUsers = action.payload.append
-          ? [...state.searchedUsers, ...action.payload.users]
-          : action.payload.users;
+          ? [...state.searchedUsers, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getUserFollowings.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;

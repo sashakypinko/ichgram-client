@@ -20,8 +20,3 @@ export interface GetFollowingParams extends PaginationParams {
 export type GetFollowersParams = GetFollowingParams;
 
 export type GetPostsParams = GetFollowingParams;
-
-export interface PayloadUsersWithLazyLoad {
-  append: boolean;
-  users: IUser[];
-}

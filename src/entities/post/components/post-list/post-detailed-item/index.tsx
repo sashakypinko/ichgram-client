@@ -7,6 +7,7 @@ import { openPostViewDialog } from '@entities/post/store/slice';
 import UserAvatar from '@entities/user/components/user-avatar';
 import { formatDistanceToNow } from 'date-fns';
 import PostFeedbackActions from '@entities/post/components/post-feedback-actions';
+import { addGetParam } from '@shared/helpers/url-helper';
 
 const PostItemContainer = styled(Box)({
   display: 'flex',
@@ -29,6 +30,7 @@ const PostDetailedItem: FC<Props> = ({ post }) => {
   
   const handleOpen = () => {
     dispatch(openPostViewDialog(post));
+    addGetParam('postId', post._id);
   }
 
   const mediaUrl = getMediumMediaUrl(post.mediaId);

@@ -12,6 +12,7 @@ import CommentList from '@entities/comment/components/comment-list';
 import PostFeedbackActions from '@entities/post/components/post-feedback-actions';
 import CommentInput from '@entities/comment/components/comment-input';
 import PostActions from '@entities/post/components/post-actions';
+import { removeGetParam } from '@shared/helpers/url-helper';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -33,6 +34,7 @@ const PostViewDialog: FC = () => {
 
   const handleClose = () => {
     dispatch(closePostViewDialog());
+    removeGetParam('postId');
   };
 
   if (!selectedPost) {

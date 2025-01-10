@@ -17,7 +17,7 @@ const Panel = styled(Paper)(({ theme }) => ({
   padding: 16,
   background: '#fff',
   height: '100%',
-  maxWidth: 420,
+  maxWidth: 460,
   borderRadius: '0 16px 16px 0',
 
   [theme.breakpoints.down(Breakpoint.SM)]: {

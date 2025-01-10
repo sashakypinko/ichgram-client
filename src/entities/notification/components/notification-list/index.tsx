@@ -3,8 +3,8 @@ import { List, styled, Typography, useTheme } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectNotification } from '@entities/notification/store/selectors';
 import NotificationItem from '@entities/notification/components/notification-list/notification-item';
-import useNotificationOverlay from '@entities/notification/hooks/use-notification-overlay.hook.ts';
-import { markAllNotificationsAsViewed } from '@entities/notification/store/slice.ts';
+import useNotificationOverlay from '@entities/notification/hooks/use-notification-overlay.hook';
+import { markAllNotificationsAsViewed } from '@entities/notification/store/slice';
 
 const ListContainer = styled(List)({
   display: 'flex',

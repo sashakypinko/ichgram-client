@@ -39,6 +39,10 @@ const UserAvatar: FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  
+  const handleAvatarClick = () => {
+   dispatch(closeAllInteractions());
+  };
 
   const avatarUrl = user?.avatar ? getThumbnailMediaUrl(user?.avatar) : defaultAvatar;
   const Avatar = () => <StyledAvatar style={{ width: size, height: size }} src={avatarUrl} alt="avatar" />;
@@ -50,7 +54,7 @@ const UserAvatar: FC<Props> = ({
       ) : (
         <PlainLink
           to={generatePath(RouteEnum.PROFILE, { username: user?.username || '' })}
-          onClick={() => dispatch(closeAllInteractions())}
+          onClick={handleAvatarClick}
         >
           <Avatar />
         </PlainLink>
