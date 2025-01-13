@@ -9,9 +9,10 @@ import { togglePostLike } from '@entities/post/store/slice';
 
 interface Props {
   post: IPost;
+  onCommentClick?: () => void;
 }
 
-const PostFeedbackActions: FC<Props> = ({ post }) => {
+const PostFeedbackActions: FC<Props> = ({ post, onCommentClick }) => {
   const authUser = useAuthUser();
   const dispatch = useAppDispatch();
 
@@ -28,11 +29,11 @@ const PostFeedbackActions: FC<Props> = ({ post }) => {
         <IconButton color="inherit" onClick={toggleLike}>
           <LikeIcon color={liked ? 'error' : 'inherit'} fontSize="large" />
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={onCommentClick}>
           <Comment />
         </IconButton>
       </Box>
-      <Typography>{post.likedBy.length} likes</Typography>
+      <Typography paddingX={1} fontWeight={600}>{post.likedBy.length} like{post.likedBy.length !== 1 && 's'}</Typography>
     </Box>
   );
 };

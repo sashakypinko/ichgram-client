@@ -40,7 +40,7 @@ const MessageUserAction: UserAction = ({ user, asIcon }) => {
   }
 
   return (
-    <Button variant="contained" color="secondary" onClick={handleCreateConversation}>
+    <Button variant="contained" color="inherit" onClick={handleCreateConversation}>
       Message
     </Button>
   );

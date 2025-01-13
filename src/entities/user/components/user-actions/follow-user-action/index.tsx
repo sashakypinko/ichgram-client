@@ -6,7 +6,7 @@ import useIsFollowed from '@entities/user/hooks/use-is-followed.hook';
 import VisibleForVisitor from '@entities/user/hoc/visible-for-visitor.hoc';
 import { selectUser } from '@entities/user/store/selectors';
 
-const FollowUserAction: UserAction = ({ user }) => {
+const FollowUserAction: UserAction = ({ user, variant = 'contained' }) => {
   const { followLoadingId } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const followed = useIsFollowed(user);
@@ -18,8 +18,8 @@ const FollowUserAction: UserAction = ({ user }) => {
 
   return (
     <Button
-      variant="contained"
-      color={followed ? 'secondary' : 'primary'}
+      variant={variant}
+      color={followed ? 'inherit' : 'primary'}
       onClick={handleToggleFollow}
       loading={followLoadingId === user._id}
     >

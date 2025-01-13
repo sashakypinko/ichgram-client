@@ -7,7 +7,7 @@ import VisibleForOwner from '@entities/user/hoc/visible-for-owner.hoc';
 const EditUserAction: UserAction = () => {
   return (
     <PlainLink to={RouteEnum.EDIT_PROFILE}>
-      <Button variant="contained" color="secondary">
+      <Button variant="contained" color="inherit">
         Edit profile
       </Button>
     </PlainLink>

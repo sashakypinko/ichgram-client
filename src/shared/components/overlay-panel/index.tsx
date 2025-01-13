@@ -1,4 +1,4 @@
-import { FC, ReactNode, MouseEvent, useRef } from 'react';
+import { FC, ReactNode, MouseEvent, useRef, useEffect } from 'react';
 import { Box, Fade, Paper, styled, Typography } from '@mui/material';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
@@ -19,6 +19,7 @@ const Panel = styled(Paper)(({ theme }) => ({
   height: '100%',
   maxWidth: 460,
   borderRadius: '0 16px 16px 0',
+  overflowY: 'auto',
 
   [theme.breakpoints.down(Breakpoint.SM)]: {
     maxWidth: '100%',
@@ -30,12 +31,23 @@ interface Props {
   title: string;
   opened: boolean;
   onClose: () => void;
+  onScrollBottom?: () => void;
   children: ReactNode;
 }
 
-const OverlayPanel: FC<Props> = ({ opened, onClose, title, children }) => {
+const OverlayPanel: FC<Props> = ({ opened, onClose, title, onScrollBottom, children }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   const isSm = useIsBreakpoint(Breakpoint.SM);
+
+  const handleScroll = () => {
+    if (
+      onScrollBottom &&
+      panelRef.current &&
+      panelRef.current.scrollTop + panelRef.current.clientHeight === panelRef.current.scrollHeight
+    ) {
+      onScrollBottom();
+    }
+  };
 
   const handleClose = (e: MouseEvent) => {
     if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -43,10 +55,16 @@ const OverlayPanel: FC<Props> = ({ opened, onClose, title, children }) => {
     }
   };
 
+  useEffect(() => {
+    if (!opened && panelRef.current) {
+      panelRef.current.scrollTop = 0;
+    }
+  }, [opened]);
+
   return (
     <Fade in={opened} timeout={300}>
       <Backdrop onClick={handleClose}>
-        <Panel ref={panelRef} elevation={isSm ? 0 : 2}>
+        <Panel ref={panelRef} onScroll={handleScroll} elevation={isSm ? 0 : 2}>
           <Typography variant="h3">{title}</Typography>
           {children}
         </Panel>

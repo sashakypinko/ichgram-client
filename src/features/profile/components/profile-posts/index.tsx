@@ -4,9 +4,10 @@ import { selectPost } from '@entities/post/store/selectors';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { getSelectedPost, openPostViewDialog } from '@entities/post/store/slice';
 import { fetchGetParam } from '@shared/helpers/url-helper';
+import EmptyPosts from '@features/profile/components/empty-posts';
 
 const ProfilePosts: FC = () => {
-  const { userPosts } = useAppSelector(selectPost);
+  const { userPosts, fetchLoading } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
   const openPostId = fetchGetParam('postId');
 
@@ -21,6 +22,10 @@ const ProfilePosts: FC = () => {
       }
     }
   }, [openPostId, userPosts]);
+  
+  if (!fetchLoading && !userPosts.length) {
+    return <EmptyPosts />;
+  }
 
   return <PostList posts={userPosts} />;
 };

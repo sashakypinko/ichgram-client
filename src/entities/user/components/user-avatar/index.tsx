@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import { generatePath } from 'react-router-dom';
 import { Box, styled, Typography, useTheme } from '@mui/material';
 import defaultAvatar from '@assets/img/default-avatar.png';
@@ -40,7 +40,8 @@ const UserAvatar: FC<Props> = ({
   const dispatch = useAppDispatch();
   const theme = useTheme();
   
-  const handleAvatarClick = () => {
+  const handleAvatarClick = (e: MouseEvent) => {
+    e.stopPropagation();
    dispatch(closeAllInteractions());
   };
 
@@ -61,7 +62,7 @@ const UserAvatar: FC<Props> = ({
       )}
       {withName && <Typography variant="h5">{user?.fullName}</Typography>}
       {withUsername && (
-        <Typography color={theme.palette.text[withName ? 'secondary' : 'primary']}>{user?.username}</Typography>
+        <Typography fontWeight={600} color={theme.palette.text[withName ? 'secondary' : 'primary']}>{user?.username}</Typography>
       )}
     </AvatarContainer>
   );

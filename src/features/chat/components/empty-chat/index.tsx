@@ -4,7 +4,6 @@ import NewConversationCard from '@entities/conversation/components/new-conversat
 
 const EmptyChatContainer = styled(Box)({
   width: '100%',
-  maxHeight: '100vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

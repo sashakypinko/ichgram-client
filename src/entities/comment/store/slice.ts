@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommentState, GetCommentsParams } from './types';
 import { PostApi } from '@entities/post/services/post-service';
-import { ActionWithCallbacks } from '@app/store';
+import { ActionWithCallbacks, PayloadWithLazyLoad } from '@app/store';
 import { FormikErrors } from 'formik/dist/types';
 import { AxiosError } from 'axios';
 import { IComment } from '@entities/comment/model/comment';
@@ -24,11 +24,12 @@ const syncCommentsWithUpdated = (comments: IComment[], updatedComment: IComment)
   return [...comments.slice(0, updatedCommentIdx), updatedComment, ...comments.slice(updatedCommentIdx + 1)];
 };
 
-export const getComments = createAsyncThunk<IComment[], GetCommentsParams>(
+export const getComments = createAsyncThunk<PayloadWithLazyLoad<IComment>, GetCommentsParams>(
   'comment/get',
   async ({ postId, ...params }, { rejectWithValue }) => {
     try {
-      return PostApi.getComments(postId, params);
+      const data = await PostApi.getComments(postId, params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch comments');
     }
@@ -101,9 +102,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getComments.fulfilled, (state: CommentState, action: PayloadAction<IComment[]>) => {
+      .addCase(getComments.fulfilled, (state: CommentState, action: PayloadAction<PayloadWithLazyLoad<IComment>>) => {
         state.fetchLoading = false;
-        state.comments = action.payload;
+        state.comments = action.payload.append
+          ? [...state.comments, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getComments.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;

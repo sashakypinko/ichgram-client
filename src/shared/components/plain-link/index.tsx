@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import { MouseEvent, ReactElement, ReactNode } from 'react';
 import { styled } from '@mui/material';
 import { ButtonProps } from '@mui/material/Button/Button';
 import { Link as CommonLink } from 'react-router-dom';
@@ -12,7 +12,7 @@ const StyledLink = styled(CommonLink)(({ theme }) => ({
 
 interface Props extends ButtonProps {
   to: string;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   children: ReactNode;
 }
 

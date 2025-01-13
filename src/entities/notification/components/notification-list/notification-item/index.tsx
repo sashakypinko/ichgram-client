@@ -9,6 +9,7 @@ import { NotificationAction, NotificationEntityType } from '@entities/notificati
 import FollowUserAction from '@entities/user/components/user-actions/follow-user-action';
 import { useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@app/routes/enums/route.enum';
+import { getNotificationText } from '@entities/notification/helpers';
 
 interface Props {
   notification: INotification;
@@ -40,7 +41,7 @@ const NotificationItem: FC<Props> = ({ notification }) => {
             <Typography fontWeight={700} component="span">
               {notification.sender.username}
             </Typography>
-            <Typography component="span"> {notification.action} your {notification.entityType}</Typography>
+            <Typography component="span"> {getNotificationText(notification.entityType, notification.action)}</Typography>
             <Typography color={theme.palette.text.secondary} component="span"> {notificationDate}</Typography>
           </Box>
           {notification.mediaId && <MediaView mediaId={notification.mediaId} size={Size.THUMBNAIL} withFullView={false} />}

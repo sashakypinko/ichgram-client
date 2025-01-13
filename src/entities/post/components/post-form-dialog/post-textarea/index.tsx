@@ -35,13 +35,14 @@ const StyledTextField = styled(TextField)({
 interface Props {
   value: string;
   onChange: (newValue: string) => void;
+  maxLength?: number;
 }
 
-const PostTextarea: FC<Props> = ({ value, onChange }) => {
+const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     
-    if (newValue.length > 2200) {
+    if (newValue.length > maxLength) {
       return;
     }
 
@@ -61,7 +62,7 @@ const PostTextarea: FC<Props> = ({ value, onChange }) => {
         <IconButton>
           <SentimentSatisfiedOutlined fontSize="large" />
         </IconButton>
-        <SymbolCount variant="body2">{value.length}/2200</SymbolCount>
+        <SymbolCount variant="body2">{value.length}/{maxLength}</SymbolCount>
       </BottomBox>
     </InputContainer>
   );

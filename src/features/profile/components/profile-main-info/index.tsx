@@ -19,6 +19,7 @@ const MainContainer = styled(Box)(({ theme }) => ({
   alignItems: 'start',
   gap: 80,
   padding: 16,
+  paddingBottom: 80,
 
   [theme.breakpoints.down(Breakpoint.MD)]: {
     gap: 16,

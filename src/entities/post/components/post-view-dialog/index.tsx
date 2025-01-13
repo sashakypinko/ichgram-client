@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { Dialog as MuiDialog, Grid, styled, Typography, Box } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
@@ -13,6 +13,10 @@ import PostFeedbackActions from '@entities/post/components/post-feedback-actions
 import CommentInput from '@entities/comment/components/comment-input';
 import PostActions from '@entities/post/components/post-actions';
 import { removeGetParam } from '@shared/helpers/url-helper';
+import { getComments } from '@entities/comment/store/slice.ts';
+import usePagination from '@shared/hooks/use-pagination.hook.ts';
+import CircularLoader from '@shared/components/circular-loader';
+import { selectComment } from '@entities/comment/store/selectors.ts';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -28,14 +32,61 @@ const Header = styled(Box)({
   borderBottom: '1px solid #DBDBDB',
 });
 
+const MainContainer = styled(Box)({
+  padding: 16,
+  flexGrow: 1,
+  height: 0,
+  overflowY: 'auto',
+});
+
+const Content = styled(Box)({
+  display: 'flex',
+  alignItems: 'start',
+  paddingBottom: 16,
+  gap: 24,
+});
+
+const Footer = styled(Box)({
+  padding: 16,
+  borderTop: '1px solid #DBDBDB',
+});
+
+const PostDate = styled(Typography)({
+  color: '#737373',
+});
+
 const PostViewDialog: FC = () => {
   const { postViewDialogOpened, selectedPost } = useAppSelector(selectPost);
+  const { comments, fetchLoading } = useAppSelector(selectComment);
   const dispatch = useAppDispatch();
+  const { offset, limit, next, reset } = usePagination();
+  const mainContainerRef = useRef<HTMLDivElement>();
+
+  const fetchComments = (postId: string) => {
+    dispatch(getComments({ postId, offset, limit }));
+  };
 
   const handleClose = () => {
     dispatch(closePostViewDialog());
     removeGetParam('postId');
+    reset();
   };
+
+  const handleScroll = () => {
+    if (
+      mainContainerRef.current &&
+      mainContainerRef.current.scrollTop + mainContainerRef.current.clientHeight ===
+        mainContainerRef.current.scrollHeight
+    ) {
+      next();
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPost) {
+      fetchComments(selectedPost._id);
+    }
+  }, [selectedPost, offset, limit]);
 
   if (!selectedPost) {
     return null;
@@ -57,23 +108,35 @@ const PostViewDialog: FC = () => {
         <Grid display="flex" flexDirection="column" item xs={12} md={6}>
           <Header>
             <Box display="flex" alignItems="center" gap={2}>
-              <UserAvatar user={selectedPost.author} withUsername />
-              <FollowUserAction user={selectedPost.author} />
+              <UserAvatar size={42} user={selectedPost.author} withUsername />
+              <Typography sx={{ ml: 2 }} variant="h4">
+                •
+              </Typography>
+              <FollowUserAction user={selectedPost.author} variant="text" />
             </Box>
             <PostActions post={selectedPost} />
           </Header>
-          <Box display="flex" gap={3} padding={2}>
-            <UserAvatar user={selectedPost.author} withUsername />
-            <Typography>{selectedPost.content}</Typography>
-          </Box>
-          <Box padding={2} flexGrow={1}>
-            <CommentList postId={selectedPost._id} />
-          </Box>
-          <Box padding={2}>
+          <MainContainer ref={mainContainerRef} onScroll={handleScroll}>
+            <Content>
+              <UserAvatar size={42} user={selectedPost.author} />
+              <Box>
+                <Typography sx={{ pr: 1 }} fontWeight={600} component="span">
+                  {selectedPost.author.username}
+                </Typography>
+                <Typography component="span">{selectedPost.content}</Typography>
+                <PostDate variant="body2">{postDate}.</PostDate>
+              </Box>
+            </Content>
+            <CommentList emptyMessage="This post has no comments yet." />
+            {!!comments.length && fetchLoading && <CircularLoader />}
+          </MainContainer>
+          <Footer>
             <PostFeedbackActions post={selectedPost} />
-            {postDate}
+            <PostDate paddingX={1} variant="body2">
+              {postDate}
+            </PostDate>
             <CommentInput postId={selectedPost._id} />
-          </Box>
+          </Footer>
         </Grid>
       </Grid>
     </StyledDialog>

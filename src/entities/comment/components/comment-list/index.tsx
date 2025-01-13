@@ -1,29 +1,24 @@
-import { FC, useEffect } from 'react';
-import { List, styled, Typography, useTheme } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@app/hooks';
+import { FC } from 'react';
+import { Box, styled, Typography, useTheme } from '@mui/material';
+import { useAppSelector } from '@app/hooks';
 import { selectComment } from '@entities/comment/store/selectors';
-import { getComments } from '@entities/comment/store/slice';
 import CommentItem from '@entities/comment/components/comment-list/comment-item';
 
-const CommentListContainer = styled(List)({
+const CommentListContainer = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
-  gap: 8,
+  gap: 24,
 });
 
 interface Props {
-  postId: string;
   emptyMessage?: string;
 }
 
-const CommentList: FC<Props> = ({ postId, emptyMessage }) => {
+const CommentList: FC<Props> = ({ emptyMessage }) => {
   const { comments } = useAppSelector(selectComment);
-  const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  useEffect(() => {
-    dispatch(getComments({ postId }));
-  }, [postId]);
+
 
   return (
     <CommentListContainer>

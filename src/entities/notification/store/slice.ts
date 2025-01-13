@@ -3,6 +3,7 @@ import { NotificationState } from './types';
 import { INotification } from '@entities/notification/model/notification';
 import { NotificationApi } from '@entities/notification/services/notification-service';
 import { PaginationParams } from '@app/types';
+import { PayloadWithLazyLoad } from '@app/store.ts';
 
 const initialState: NotificationState = {
   notifications: [],
@@ -12,11 +13,12 @@ const initialState: NotificationState = {
   error: null,
 };
 
-export const getNotifications = createAsyncThunk<INotification[], PaginationParams>(
+export const getNotifications = createAsyncThunk<PayloadWithLazyLoad<INotification>, PaginationParams>(
   'notification/get',
   async (params, { rejectWithValue }) => {
     try {
-      return NotificationApi.getAll(params);
+      const data = await NotificationApi.getAll(params);
+      return { data, append: !!params.offset && params.offset > 0 };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch notifications');
     }
@@ -54,9 +56,11 @@ const slice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getNotifications.fulfilled, (state: NotificationState, action: PayloadAction<INotification[]>) => {
+      .addCase(getNotifications.fulfilled, (state: NotificationState, action: PayloadAction<PayloadWithLazyLoad<INotification>>) => {
         state.loading = false;
-        state.notifications = action.payload;
+        state.notifications = action.payload.append
+          ? [...state.notifications, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(getNotifications.rejected, (state: NotificationState, action: PayloadAction<unknown>) => {
         state.loading = false;

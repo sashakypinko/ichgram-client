@@ -6,6 +6,7 @@ export interface IPost {
   content: string;
   likedBy: string[];
   author: IUser;
+  commentsCount: number;
   createdAt: Date;
   updatedAt: Date;
 }

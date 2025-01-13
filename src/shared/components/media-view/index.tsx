@@ -86,7 +86,7 @@ const MediaView: FC<Props> = ({ mediaId = null, mediaUrl = '', sx, size = Size.S
       sx={
         sx || {
           borderRadius: isThumbnail ? 2 : 4,
-          width: isThumbnail ? 64 : 'auto',
+          minWidth: isThumbnail ? 64 : 'auto',
           height: isThumbnail ? 64 : 'auto',
         }
       }
