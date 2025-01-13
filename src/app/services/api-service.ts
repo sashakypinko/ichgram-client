@@ -3,6 +3,8 @@ import axios from 'axios';
 import { AuthStorage } from '@features/auth/services/auth-storage';
 import { AuthData } from '@features/auth/types';
 
+const fileFieldNames = ['media', 'avatar'];
+
 export default class ApiService {
   private readonly instance: AxiosInstance;
 
@@ -16,7 +18,7 @@ export default class ApiService {
     const appendFormData = (dataToAppend: object, path = '') => {
       Object.entries(dataToAppend || {}).forEach(([name, value]) => {
         const newPath = path ? `${path}[${name}]` : name;
-        if (name === 'media') {
+        if (fileFieldNames.includes(name)) {
           formData.append(newPath, value);
         } else if (typeof value === 'object') {
           appendFormData(value, newPath);

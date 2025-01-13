@@ -16,7 +16,7 @@ const SignInPage = (): ReactElement => {
       <Grid container>
         {!isSm && (
           <Grid item md={6}>
-            <Image src={image} alt="sign-in-image" />
+            <Image src={image} alt="not-found-image" />
           </Grid>
         )}
         <Grid item display="flex" flexDirection="column" width="100%" gap={2} sm={12} md={6}>

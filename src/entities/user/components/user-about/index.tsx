@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import { IUser } from '@entities/user/model/user';
 import { Box, Typography, useTheme } from '@mui/material';
+import { IUser } from '@entities/user/model/user';
 import { shortenString } from '@shared/helpers/string-helper';
 
 interface Props {
@@ -16,13 +16,15 @@ const UserAbout: FC<Props> = ({ user }) => {
   return (
     <Box>
       <Typography>{showMore ? user.about : shortenString(user.about, 120)}</Typography>
-      <Typography
-        sx={{ cursor: 'pointer' }}
-        color={theme.palette.text.secondary}
-        onClick={() => setShowMore(!showMore)}
-      >
-        {showMore ? 'less' : 'more'}
-      </Typography>
+      {user.about.length > 120 && (
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          color={theme.palette.text.secondary}
+          onClick={() => setShowMore(!showMore)}
+        >
+          {showMore ? 'less' : 'more'}
+        </Typography>
+      )}
     </Box>
   );
 };

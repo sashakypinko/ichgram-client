@@ -23,6 +23,7 @@ import '@fontsource/montserrat/500.css';
 import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import './index.css';
+import ErrorBoundary from '@shared/components/error-boundary';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -42,24 +43,26 @@ const App: FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <CssBaseline />
-        <Router>
-          <Box sx={{ display: 'flex', height: '100vh', overflowY: 'hidden' }}>
-            <Sidebar />
-            <Box width="100%" position="relative" flexGrow={1}>
-              <UserOverlayPanel />
-              <NotificationOverlayPanel />
-              <NewConversationDialog />
-              <FollowersDialog />
-              <FollowingDialog />
-              <PostFormDialog />
-              <PostViewDialog />
-              <Routes />
+      <ErrorBoundary>
+        <SnackbarProvider>
+          <CssBaseline />
+          <Router>
+            <Box sx={{ display: 'flex', height: '100vh', overflowY: 'hidden' }}>
+              <Sidebar />
+              <Box width="100%" position="relative" flexGrow={1}>
+                <UserOverlayPanel />
+                <NotificationOverlayPanel />
+                <NewConversationDialog />
+                <FollowersDialog />
+                <FollowingDialog />
+                <PostFormDialog />
+                <PostViewDialog />
+                <Routes />
+              </Box>
             </Box>
-          </Box>
-        </Router>
-      </SnackbarProvider>
+          </Router>
+        </SnackbarProvider>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 };

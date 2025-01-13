@@ -2,6 +2,7 @@ import ApiService from '../../../app/services/api-service';
 import { IUser } from '@entities/user/model/user';
 import { PaginationParams } from '@app/types';
 import { IPost } from '@entities/post/model/post';
+import { UpdateUserData } from '@entities/user/types';
 
 class UserService extends ApiService {
   search = async (search: string = ''): Promise<IUser[]> => {
@@ -26,6 +27,11 @@ class UserService extends ApiService {
 
   getPosts = async (id: string, params?: PaginationParams): Promise<IPost[]> => {
     const res = await this.get(`${id}/posts`, params).then((res) => res.data);
+    return res.data;
+  };
+  
+  update = async (id: string, data: UpdateUserData): Promise<IUser> => {
+    const res = await this.put(`${id}`, data, false).then((res) => res.data);
     return res.data;
   };
 

@@ -27,6 +27,7 @@ interface Props {
   withUsername?: boolean;
   withoutLink?: boolean;
   direction?: 'row' | 'column';
+  url?: string | null;
 }
 
 const UserAvatar: FC<Props> = ({
@@ -36,6 +37,7 @@ const UserAvatar: FC<Props> = ({
   withUsername = false,
   direction = 'row',
   withoutLink,
+  url,
 }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
@@ -45,7 +47,7 @@ const UserAvatar: FC<Props> = ({
    dispatch(closeAllInteractions());
   };
 
-  const avatarUrl = user?.avatar ? getThumbnailMediaUrl(user?.avatar) : defaultAvatar;
+  const avatarUrl = url || (user?.avatar ? getThumbnailMediaUrl(user?.avatar) : defaultAvatar);
   const Avatar = () => <StyledAvatar style={{ width: size, height: size }} src={avatarUrl} alt="avatar" />;
 
   return (
@@ -60,10 +62,12 @@ const UserAvatar: FC<Props> = ({
           <Avatar />
         </PlainLink>
       )}
-      {withName && <Typography variant="h5">{user?.fullName}</Typography>}
-      {withUsername && (
-        <Typography fontWeight={600} color={theme.palette.text[withName ? 'secondary' : 'primary']}>{user?.username}</Typography>
-      )}
+      <Box>
+        {withName && <Typography variant="h5">{user?.fullName}</Typography>}
+        {withUsername && (
+          <Typography fontWeight={600} color={theme.palette.text[withName ? 'secondary' : 'primary']}>{user?.username}</Typography>
+        )}
+      </Box>
     </AvatarContainer>
   );
 };

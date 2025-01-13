@@ -14,7 +14,7 @@ const theme = createTheme({
       },
     },
     h2: {
-      fontSize: '4rem',
+      fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.3,
       '@media (max-width:600px)': {
@@ -60,8 +60,8 @@ const theme = createTheme({
       },
     },
     subtitle1: {
-      fontSize: '1.25rem',
-      fontWeight: 500,
+      fontSize: '1.175rem',
+      fontWeight: 600,
       lineHeight: 1.6,
       '@media (max-width:600px)': {
         fontSize: '1rem',

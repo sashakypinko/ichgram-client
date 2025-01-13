@@ -13,10 +13,10 @@ import PostFeedbackActions from '@entities/post/components/post-feedback-actions
 import CommentInput from '@entities/comment/components/comment-input';
 import PostActions from '@entities/post/components/post-actions';
 import { removeGetParam } from '@shared/helpers/url-helper';
-import { getComments } from '@entities/comment/store/slice.ts';
-import usePagination from '@shared/hooks/use-pagination.hook.ts';
+import { getComments } from '@entities/comment/store/slice';
+import usePagination from '@shared/hooks/use-pagination.hook';
 import CircularLoader from '@shared/components/circular-loader';
-import { selectComment } from '@entities/comment/store/selectors.ts';
+import { selectComment } from '@entities/comment/store/selectors';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {

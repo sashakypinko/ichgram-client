@@ -3,7 +3,10 @@ import { GetFollowersParams, GetFollowingParams, UserState } from './types';
 import { IUser } from '@entities/user/model/user';
 import { UserApi } from '@entities/user/services/user-service';
 import { syncAuthUser } from '@features/auth/store/slice';
-import { PayloadWithLazyLoad, RootState } from '@app/store';
+import { ActionWithCallbacks, PayloadWithLazyLoad, RootState } from '@app/store';
+import { UpdateUserData } from '@entities/user/types';
+import { AxiosError } from 'axios';
+import { FormikErrors } from 'formik/dist/types';
 
 const initialState: UserState = {
   searchedUsers: [],
@@ -56,6 +59,25 @@ export const selectUserByUsername = createAsyncThunk<IUser | null, string>(
       return UserApi.getByUsername(username);
     } catch (error: unknown) {
       return rejectWithValue('Failed to select user');
+    }
+  },
+);
+
+export const updateUser = createAsyncThunk<
+  IUser,
+  ActionWithCallbacks<{ id: string; data: UpdateUserData }, void, FormikErrors<UpdateUserData>>
+>(
+  'user/update',
+  async ({ payload, onSuccess, onError }, { rejectWithValue }) => {
+    try {
+      const user = await UserApi.update(payload.id, payload.data);
+      if (onSuccess) onSuccess();
+      return user;
+    } catch (error: unknown) {
+      if (onError && error instanceof AxiosError && error?.response?.data.errors) {
+        onError(error.response.data.errors);
+      }
+      return rejectWithValue('Failed to update user');
     }
   },
 );
@@ -209,6 +231,19 @@ const slice = createSlice({
         state.error = action.payload as string;
       })
 
+      .addCase(updateUser.pending, (state: UserState) => {
+        state.editLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state: UserState, action: PayloadAction<IUser | null>) => {
+        state.editLoading = false;
+        // TODO: sync user
+      })
+      .addCase(updateUser.rejected, (state: UserState, action: PayloadAction<unknown>) => {
+        state.editLoading = false;
+        state.error = action.payload as string;
+      })
+
       .addCase(followUser.pending, (state: UserState, action) => {
         state.followLoadingId = action.meta.arg;
         state.error = null;
@@ -238,7 +273,6 @@ const slice = createSlice({
 export const {
   setOpenedUserOverlay,
   clearSearchedUsers,
-  setSelectedUser,
   syncUserAcrossState,
   openFollowersDialog,
   closeFollowersDialog,

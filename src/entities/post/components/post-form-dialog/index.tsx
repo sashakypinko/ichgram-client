@@ -127,7 +127,9 @@ const PostFormDialog: FC = () => {
           {!file && !editablePost && <MediaDropZone onLoad={setFile} />}
         </DropZoneBox>
         <Grid item xs={12} md={4}>
-          <UserAvatar user={authUser} withUsername />
+          <Box padding={1}>
+            <UserAvatar size={42} user={authUser} withUsername />
+          </Box>
           <PostTextarea value={content} onChange={setContent} />
         </Grid>
       </Grid>

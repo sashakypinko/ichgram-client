@@ -8,7 +8,7 @@ import UserAvatar from '@entities/user/components/user-avatar';
 import { formatDistanceToNow } from 'date-fns';
 import PostFeedbackActions from '@entities/post/components/post-feedback-actions';
 import { addGetParam } from '@shared/helpers/url-helper';
-import { shortenString } from '@shared/helpers/string-helper.ts';
+import { shortenString } from '@shared/helpers/string-helper';
 
 const PostItemContainer = styled(Box)({
   display: 'flex',

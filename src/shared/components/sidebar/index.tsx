@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
 import { openPostFormDialog } from '@entities/post/store/slice';
 import useUnreadNotificationsCount from '@entities/notification/hooks/use-unread-notifications-count.hook';
+import PlainLink from '@shared/components/plain-link';
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
   minWidth: 240,
@@ -122,14 +123,14 @@ const Sidebar: FC = () => {
         Icon: () => <UserAvatar user={authUser} withoutLink />,
       },
     ],
-    [location, overlayOpened, isSm, unreadNotificationsCount, unreadMessagesCount, postFormDialogOpened],
+    [authUser, location, overlayOpened, isSm, unreadNotificationsCount, unreadMessagesCount, postFormDialogOpened],
   );
 
   if (!authUser) return null;
 
   return (
     <SidebarContainer>
-      {!isLg && <Logo src={logo} alt="logo" />}
+      {!isLg && <PlainLink to={RouteEnum.MAIN}><Logo src={logo} alt="logo" /></PlainLink>}
       <List sx={{ display: 'flex', flexDirection: isSm ? 'row' : 'column' }}>
         {sidebarLinks.map((linkProps, index) => (
           <SidebarItem key={index} {...linkProps} />

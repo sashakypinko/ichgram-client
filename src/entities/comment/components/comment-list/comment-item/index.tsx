@@ -7,8 +7,8 @@ import { FavoriteBorderRounded, FavoriteRounded } from '@mui/icons-material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { useAppDispatch } from '@app/hooks';
 import { removeComment, toggleCommentLike } from '@entities/comment/store/slice';
-import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook.ts';
-import Breakpoint from '@shared/enums/breakpoint.enum.ts';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
 const StyledItem = styled(Box)({
   display: 'flex',

@@ -3,7 +3,7 @@ import { NotificationState } from './types';
 import { INotification } from '@entities/notification/model/notification';
 import { NotificationApi } from '@entities/notification/services/notification-service';
 import { PaginationParams } from '@app/types';
-import { PayloadWithLazyLoad } from '@app/store.ts';
+import { PayloadWithLazyLoad } from '@app/store';
 
 const initialState: NotificationState = {
   notifications: [],
