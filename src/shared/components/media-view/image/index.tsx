@@ -12,7 +12,7 @@ const StyledImage = styled('img')({
 
 const Image: FC<MediaViewComponent> = ({ mediaId, src, withFullView }) => {
   const [openFullView, setOpenFullView] = useState<boolean>(false);
-  
+
   return (
     <>
       <StyledImage src={src} alt="image_preview" onClick={() => withFullView && setOpenFullView(true)} />

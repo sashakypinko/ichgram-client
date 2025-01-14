@@ -10,7 +10,7 @@ const socketEvents: (socket: Socket, dispatch: AppDispatch) => void = (socket: S
   });
 
   socket.on('notification:deleted', (notification: INotification) => {
-    console.log({ notification })
+    console.log({ notification });
     dispatch(excludeNotification(notification));
   });
 };

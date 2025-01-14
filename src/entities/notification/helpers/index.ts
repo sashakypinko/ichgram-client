@@ -2,7 +2,6 @@ import { NotificationAction, NotificationEntityType } from '@entities/notificati
 
 type NotificationMappingKey = `${NotificationEntityType}-${NotificationAction}`;
 
-
 export const getNotificationText = (entity: NotificationEntityType, action: NotificationAction): string => {
   const mapping: Partial<Record<NotificationMappingKey, string>> = {
     'post-like': 'liked your post',
@@ -10,6 +9,6 @@ export const getNotificationText = (entity: NotificationEntityType, action: Noti
     'comment-like': 'liked your comment',
     'user-follow': 'started following you',
   };
-  
+
   return mapping[`${entity}-${action}`] || '';
 };

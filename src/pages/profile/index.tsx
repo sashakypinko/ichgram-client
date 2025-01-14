@@ -45,7 +45,7 @@ const ProfilePage: FC = () => {
 
   return (
     <Page direction="column" onScrollBottom={next}>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 8 }}>
         <ProfileMainInfo />
         <ProfilePosts />
         {!!userPosts.length && fetchLoading && <CircularLoader />}

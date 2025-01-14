@@ -64,7 +64,7 @@ const PostDetailedItem: FC<Props> = ({ post }) => {
         <Typography>{shortenString(post.content, 42)}</Typography>
       </Box>
       <CommentsText onClick={handleOpen}>View all comments ({post.commentsCount})</CommentsText>
-      <Divider sx={{ py: 2 }}/>
+      <Divider sx={{ py: 2 }} />
     </PostItemContainer>
   );
 };

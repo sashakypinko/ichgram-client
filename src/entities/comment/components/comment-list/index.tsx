@@ -18,8 +18,6 @@ const CommentList: FC<Props> = ({ emptyMessage }) => {
   const { comments } = useAppSelector(selectComment);
   const theme = useTheme();
 
-
-
   return (
     <CommentListContainer>
       {!comments.length && emptyMessage && (

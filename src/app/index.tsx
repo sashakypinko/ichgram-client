@@ -24,6 +24,7 @@ import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import './index.css';
 import ErrorBoundary from '@shared/components/error-boundary';
+import MobileHeader from '@shared/components/mobile-header';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +49,7 @@ const App: FC = () => {
           <CssBaseline />
           <Router>
             <Box sx={{ display: 'flex', height: '100vh', overflowY: 'hidden' }}>
+              <MobileHeader />.
               <Sidebar />
               <Box width="100%" position="relative" flexGrow={1}>
                 <UserOverlayPanel />

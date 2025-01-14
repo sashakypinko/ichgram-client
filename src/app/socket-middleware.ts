@@ -7,11 +7,7 @@ import conversationSocketEvents from '@entities/conversation/store/socket-events
 import messageSocketEvents from '@entities/message/store/socket-events';
 import notificationSocketEvents from '@entities/notification/store/socket-events';
 
-const socketEventRegisters = [
-  conversationSocketEvents,
-  messageSocketEvents,
-  notificationSocketEvents,
-];
+const socketEventRegisters = [conversationSocketEvents, messageSocketEvents, notificationSocketEvents];
 
 const socket = io(import.meta.env.VITE_MESSAGES_SOCKET_URL, {
   path: '/core/socket.io',

@@ -33,7 +33,7 @@ const NotificationOverlayPanel: FC = () => {
 
   return (
     <OverlayPanel opened={opened} title="Notification" onClose={hide} onScrollBottom={next}>
-      <NotificationList emptyMessage="You don't have any notifications yet."/>
+      <NotificationList emptyMessage="You don't have any notifications yet." />
     </OverlayPanel>
   );
 };

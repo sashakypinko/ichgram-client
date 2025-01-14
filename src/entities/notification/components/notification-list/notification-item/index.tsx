@@ -18,18 +18,18 @@ interface Props {
 const NotificationItem: FC<Props> = ({ notification }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  
+
   const handleClick = () => {
     if ([NotificationEntityType.POST, NotificationEntityType.COMMENT].includes(notification.entityType)) {
       navigate(`${RouteEnum.OWN_PROFILE}?postId=${notification.entityId}`);
     }
   };
-  
+
   const notificationDate = formatDistanceToNow(notification.createdAt, { addSuffix: true });
-  
+
   return (
     <ListItem sx={{ p: 0 }}>
-      <ListItemButton 
+      <ListItemButton
         sx={{ borderRadius: 2, background: notification.viewed ? 'none' : '#ececec' }}
         onClick={handleClick}
       >
@@ -41,10 +41,18 @@ const NotificationItem: FC<Props> = ({ notification }) => {
             <Typography fontWeight={700} component="span">
               {notification.sender.username}
             </Typography>
-            <Typography component="span"> {getNotificationText(notification.entityType, notification.action)}</Typography>
-            <Typography color={theme.palette.text.secondary} component="span"> {notificationDate}</Typography>
+            <Typography component="span">
+              {' '}
+              {getNotificationText(notification.entityType, notification.action)}
+            </Typography>
+            <Typography color={theme.palette.text.secondary} component="span">
+              {' '}
+              {notificationDate}
+            </Typography>
           </Box>
-          {notification.mediaId && <MediaView mediaId={notification.mediaId} size={Size.THUMBNAIL} withFullView={false} />}
+          {notification.mediaId && (
+            <MediaView mediaId={notification.mediaId} size={Size.THUMBNAIL} withFullView={false} />
+          )}
           {notification.action === NotificationAction.FOLLOW && <FollowUserAction user={notification.sender} />}
         </Box>
       </ListItemButton>

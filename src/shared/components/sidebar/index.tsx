@@ -28,6 +28,7 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
 
   [theme.breakpoints.down(Breakpoint.LG)]: {
     minWidth: 'auto',
+    padding: 0,
   },
 
   [theme.breakpoints.down(Breakpoint.SM)]: {
@@ -130,7 +131,11 @@ const Sidebar: FC = () => {
 
   return (
     <SidebarContainer>
-      {!isLg && <PlainLink to={RouteEnum.MAIN}><Logo src={logo} alt="logo" /></PlainLink>}
+      {!isLg && (
+        <PlainLink to={RouteEnum.MAIN}>
+          <Logo src={logo} alt="logo" />
+        </PlainLink>
+      )}
       <List sx={{ display: 'flex', flexDirection: isSm ? 'row' : 'column' }}>
         {sidebarLinks.map((linkProps, index) => (
           <SidebarItem key={index} {...linkProps} />

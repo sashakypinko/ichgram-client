@@ -27,10 +27,8 @@ export const addGetParam = (key: string, value: string): void => {
   history.pushState(null, '', url);
 };
 
-
 export const removeGetParam = (key: string): void => {
   const url = new URL(window.location.href);
   url.searchParams.delete(key);
   history.pushState(null, '', url);
 };
-

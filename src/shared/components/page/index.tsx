@@ -6,7 +6,7 @@ const StyledPage = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '100%',
   height: '100%',
-  overflowY: 'scroll',
+  overflowY: 'auto',
 
   [theme.breakpoints.down(Breakpoint.SM)]: {
     height: 'calc(100% - 64px)',

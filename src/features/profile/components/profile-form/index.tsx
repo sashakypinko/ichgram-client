@@ -33,7 +33,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
     borderRadius: 12,
     background: theme.palette.background.default,
-  }
+  },
 }));
 
 const FieldContainer = styled(Box)({
@@ -69,10 +69,7 @@ const ProfileForm: FC = () => {
   const user = useAuthUser();
   const navigate = useNavigate();
 
-  const handleSubmit = async (
-    values: UpdateUserData,
-    { resetForm, setErrors }: FormikHelpers<UpdateUserData>,
-  ) => {
+  const handleSubmit = async (values: UpdateUserData, { resetForm, setErrors }: FormikHelpers<UpdateUserData>) => {
     if (user) {
       dispatch(
         updateUser({
@@ -111,12 +108,12 @@ const ProfileForm: FC = () => {
       {({ setFieldValue, values }) => (
         <StyledForm>
           <AvatarContainer>
-            <UserAvatar 
+            <UserAvatar
               user={user}
               size={60}
-              url={values.avatar ? URL.createObjectURL(values.avatar) : null} 
+              url={values.avatar ? URL.createObjectURL(values.avatar) : null}
               withUsername
-              withName 
+              withName
               withoutLink
             />
             <Button component="label" variant="contained">
@@ -124,7 +121,7 @@ const ProfileForm: FC = () => {
               <VisuallyHiddenInput
                 type="file"
                 accept={'.png,.jpg'}
-                onChange={e => setFieldValue('avatar', (e.target.files || [])[0])}
+                onChange={(e) => setFieldValue('avatar', (e.target.files || [])[0])}
                 hidden
                 multiple
               />

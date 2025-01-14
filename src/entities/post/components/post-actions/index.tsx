@@ -24,11 +24,11 @@ const ActionItem = styled(Box)({
   borderBottom: '1px solid #DBDBDB',
   padding: 16,
   cursor: 'pointer',
-  
+
   '&:last-child': {
     borderBottom: 'none',
   },
-  
+
   '&:active': {
     background: '#cacaca',
   },
@@ -47,22 +47,24 @@ const PostActions: FC<Props> = ({ post }) => {
 
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
-  
+
   const handleEdit = () => {
     dispatch(openPostFormDialog(post));
   };
-  
+
   const handleDelete = () => {
-    dispatch(removePost({
-      payload: post._id,
-      onSuccess: () => setOpened(false),
-    }));
+    dispatch(
+      removePost({
+        payload: post._id,
+        onSuccess: () => setOpened(false),
+      }),
+    );
   };
 
   if (post.author._id !== authUser?._id) {
     return null;
   }
-  
+
   return (
     <>
       <IconButton onClick={() => setOpened(true)}>

@@ -33,7 +33,9 @@ const PostFeedbackActions: FC<Props> = ({ post, onCommentClick }) => {
           <Comment />
         </IconButton>
       </Box>
-      <Typography paddingX={1} fontWeight={600}>{post.likedBy.length} like{post.likedBy.length !== 1 && 's'}</Typography>
+      <Typography paddingX={1} fontWeight={600}>
+        {post.likedBy.length} like{post.likedBy.length !== 1 && 's'}
+      </Typography>
     </Box>
   );
 };

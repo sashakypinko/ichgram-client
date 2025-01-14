@@ -13,5 +13,3 @@ const socketEvents: (socket: Socket, dispatch: AppDispatch) => void = (socket: S
 };
 
 export default socketEvents;
-
-

@@ -19,10 +19,11 @@ const MoreCircle = styled(Box)({
 
 interface Props {
   conversation: IConversation;
+  size?: number;
   maxItems?: number;
 }
 
-const ConversationImage: FC<Props> = ({ conversation, maxItems = 3 }) => {
+const ConversationImage: FC<Props> = ({ conversation, size = 64, maxItems = 3 }) => {
   const authUser = useAuthUser();
 
   const filteredParticipants = conversation.participants
@@ -31,8 +32,7 @@ const ConversationImage: FC<Props> = ({ conversation, maxItems = 3 }) => {
 
   const participantsLeft = conversation.participants.length - maxItems;
 
-  const baseAvatarSize = 64;
-  const avatarSize = baseAvatarSize - (filteredParticipants.length - 1) * 12;
+  const avatarSize = size - (filteredParticipants.length - 1) * 12;
   const overlapOffset = 12;
 
   return (
@@ -41,7 +41,7 @@ const ConversationImage: FC<Props> = ({ conversation, maxItems = 3 }) => {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        height: `${baseAvatarSize}px`,
+        height: `${size}px`,
       }}
     >
       {filteredParticipants.map(({ user }, index) => (

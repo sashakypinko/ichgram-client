@@ -22,7 +22,7 @@ const ProfilePosts: FC = () => {
       }
     }
   }, [openPostId, userPosts]);
-  
+
   if (!fetchLoading && !userPosts.length) {
     return <EmptyPosts />;
   }

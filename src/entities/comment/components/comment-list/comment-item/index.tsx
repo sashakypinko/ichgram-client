@@ -51,9 +51,11 @@ const CommentItem: FC<Props> = ({ comment }) => {
   };
 
   const handleRemoveComment = () => {
-    dispatch(removeComment({
-      payload: comment._id,
-    }));
+    dispatch(
+      removeComment({
+        payload: comment._id,
+      }),
+    );
   };
 
   const ownComment = comment.author._id === authUser?._id;

@@ -29,8 +29,8 @@ const SymbolCount = styled(Typography)({
 });
 
 interface Props {
-    postId: string;
-    maxLength?: number;
+  postId: string;
+  maxLength?: number;
 }
 
 const CommentInput: FC<Props> = ({ postId, maxLength = 256 }) => {
@@ -44,7 +44,7 @@ const CommentInput: FC<Props> = ({ postId, maxLength = 256 }) => {
     if (newValue.length > maxLength) {
       return;
     }
-    
+
     setText(e.target.value);
   };
 
@@ -71,19 +71,23 @@ const CommentInput: FC<Props> = ({ postId, maxLength = 256 }) => {
       <IconButton>
         <SentimentSatisfiedOutlined fontSize="large" />
       </IconButton>
-      <StyledTextField 
-        value={text} 
+      <StyledTextField
+        value={text}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Add a comment..."
-        maxRows={4} 
-        multiline 
-        fullWidth 
+        maxRows={4}
+        multiline
+        fullWidth
       />
       <Button onClick={handleSubmit} disabled={!text} loading={createLoading}>
         Send
       </Button>
-      {!!text.length && <SymbolCount variant="body2">{text.length}/{maxLength}</SymbolCount>}
+      {!!text.length && (
+        <SymbolCount variant="body2">
+          {text.length}/{maxLength}
+        </SymbolCount>
+      )}
     </Box>
   );
 };

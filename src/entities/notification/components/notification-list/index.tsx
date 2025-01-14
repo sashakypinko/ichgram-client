@@ -27,19 +27,16 @@ const NotificationList: FC<Props> = ({ emptyMessage }) => {
       dispatch(markAllNotificationsAsViewed());
     }
   }, [opened]);
-  
+
   return (
     <ListContainer>
       {!notifications.length && emptyMessage && (
         <Typography sx={{ p: 2 }} color={theme.palette.text.secondary}>
           {emptyMessage}
         </Typography>
-      )} 
+      )}
       {notifications.map((notification) => (
-        <NotificationItem
-          key={notification._id}
-          notification={notification}
-        />
+        <NotificationItem key={notification._id} notification={notification} />
       ))}
     </ListContainer>
   );

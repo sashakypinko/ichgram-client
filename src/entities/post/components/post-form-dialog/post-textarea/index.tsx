@@ -41,28 +41,24 @@ interface Props {
 const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    
+
     if (newValue.length > maxLength) {
       return;
     }
 
     onChange(newValue);
   };
-  
+
   return (
     <InputContainer>
-      <StyledTextField
-        value={value}
-        onChange={handleChange}
-        rows={8} 
-        multiline
-        fullWidth
-      />
+      <StyledTextField value={value} onChange={handleChange} rows={8} multiline fullWidth />
       <BottomBox>
         <IconButton>
           <SentimentSatisfiedOutlined fontSize="large" />
         </IconButton>
-        <SymbolCount variant="body2">{value.length}/{maxLength}</SymbolCount>
+        <SymbolCount variant="body2">
+          {value.length}/{maxLength}
+        </SymbolCount>
       </BottomBox>
     </InputContainer>
   );

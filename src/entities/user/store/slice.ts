@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { GetFollowersParams, GetFollowingParams, UserState } from './types';
+import { GetFollowersParams, GetFollowingParams, SearchUsersParams, UserState } from './types';
 import { IUser } from '@entities/user/model/user';
 import { UserApi } from '@entities/user/services/user-service';
 import { syncAuthUser } from '@features/auth/store/slice';
@@ -20,13 +20,17 @@ const initialState: UserState = {
   error: null,
 };
 
-export const searchUsers = createAsyncThunk<IUser[], string>('user/search', async (search, { rejectWithValue }) => {
-  try {
-    return UserApi.search(search);
-  } catch (error: unknown) {
-    return rejectWithValue('Failed to search users');
-  }
-});
+export const searchUsers = createAsyncThunk<PayloadWithLazyLoad<IUser>, SearchUsersParams>(
+  'user/search',
+  async ({ search, ...params }, { rejectWithValue }) => {
+    try {
+      const data = await UserApi.search(search, params);
+      return { data, append: !!params.offset && params.offset > 0 };
+    } catch (error: unknown) {
+      return rejectWithValue('Failed to search users');
+    }
+  },
+);
 
 export const getUserFollowers = createAsyncThunk<PayloadWithLazyLoad<IUser>, GetFollowersParams>(
   'user/getFollowers',
@@ -66,21 +70,18 @@ export const selectUserByUsername = createAsyncThunk<IUser | null, string>(
 export const updateUser = createAsyncThunk<
   IUser,
   ActionWithCallbacks<{ id: string; data: UpdateUserData }, void, FormikErrors<UpdateUserData>>
->(
-  'user/update',
-  async ({ payload, onSuccess, onError }, { rejectWithValue }) => {
-    try {
-      const user = await UserApi.update(payload.id, payload.data);
-      if (onSuccess) onSuccess();
-      return user;
-    } catch (error: unknown) {
-      if (onError && error instanceof AxiosError && error?.response?.data.errors) {
-        onError(error.response.data.errors);
-      }
-      return rejectWithValue('Failed to update user');
+>('user/update', async ({ payload, onSuccess, onError }, { rejectWithValue }) => {
+  try {
+    const user = await UserApi.update(payload.id, payload.data);
+    if (onSuccess) onSuccess();
+    return user;
+  } catch (error: unknown) {
+    if (onError && error instanceof AxiosError && error?.response?.data.errors) {
+      onError(error.response.data.errors);
     }
-  },
-);
+    return rejectWithValue('Failed to update user');
+  }
+});
 
 export const followUser = createAsyncThunk<IUser, string>(
   'user/follow',
@@ -179,9 +180,11 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(searchUsers.fulfilled, (state: UserState, action: PayloadAction<IUser[]>) => {
+      .addCase(searchUsers.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
         state.fetchLoading = false;
-        state.searchedUsers = action.payload;
+        state.searchedUsers = action.payload.append
+          ? [...state.searchedUsers, ...action.payload.data]
+          : action.payload.data;
       })
       .addCase(searchUsers.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;

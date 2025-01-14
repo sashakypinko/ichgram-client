@@ -166,9 +166,7 @@ const slice = createSlice({
       })
       .addCase(getUserPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.userPosts = action.payload.append
-          ? [...state.userPosts, ...action.payload.data]
-          : action.payload.data;
+        state.userPosts = action.payload.append ? [...state.userPosts, ...action.payload.data] : action.payload.data;
       })
       .addCase(getUserPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -181,9 +179,7 @@ const slice = createSlice({
       })
       .addCase(getFeedPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.feedPosts = action.payload.append
-          ? [...state.feedPosts, ...action.payload.data]
-          : action.payload.data;
+        state.feedPosts = action.payload.append ? [...state.feedPosts, ...action.payload.data] : action.payload.data;
       })
       .addCase(getFeedPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -196,7 +192,7 @@ const slice = createSlice({
       })
       .addCase(getTrendingPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
         state.fetchLoading = false;
-        state.trendingPosts =action.payload.append
+        state.trendingPosts = action.payload.append
           ? [...state.trendingPosts, ...action.payload.data]
           : action.payload.data;
       })

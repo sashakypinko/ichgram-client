@@ -17,6 +17,10 @@ export interface GetFollowingParams extends PaginationParams {
   userId: string;
 }
 
+export interface SearchUsersParams extends PaginationParams {
+  search: string;
+}
+
 export type GetFollowersParams = GetFollowingParams;
 
 export type GetPostsParams = GetFollowingParams;

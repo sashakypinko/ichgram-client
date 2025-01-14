@@ -41,36 +41,30 @@ interface Props {
 
 const PostItem: FC<Props> = ({ post }) => {
   const [hovered, setHovered] = useState<boolean>(false);
-  
+
   const dispatch = useAppDispatch();
 
   const handleOpen = () => {
     dispatch(openPostViewDialog(post));
     addGetParam('postId', post._id);
-  }
-  
+  };
+
   const mediaUrl = getMediumMediaUrl(post.mediaId);
 
   return (
-    <PostItemContainer
-      onClick={handleOpen} 
-      onMouseOver={() => setHovered(true)} 
-      onMouseLeave={() => setHovered(false)}
-    >
-      {
-        hovered && (
-          <PostInfo>
-            <Box display="flex" alignItems="center" gap={1}>
-              <FavoriteRounded fontSize="large" />
-              <Typography variant="h5">{post.likedBy.length}</Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Comment />
-              <Typography variant="h5">{post.commentsCount}</Typography>
-            </Box>
-          </PostInfo>
-        )
-      }
+    <PostItemContainer onClick={handleOpen} onMouseOver={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      {hovered && (
+        <PostInfo>
+          <Box display="flex" alignItems="center" gap={1}>
+            <FavoriteRounded fontSize="large" />
+            <Typography variant="h5">{post.likedBy.length}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={1}>
+            <Comment />
+            <Typography variant="h5">{post.commentsCount}</Typography>
+          </Box>
+        </PostInfo>
+      )}
       <Image src={mediaUrl} alt="post_item" />
     </PostItemContainer>
   );

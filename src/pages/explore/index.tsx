@@ -15,12 +15,12 @@ const ExplorePage: FC = () => {
 
   const fetchPosts = () => {
     dispatch(getTrendingPosts({ offset, limit }));
-  }
+  };
 
   useEffect(() => {
     fetchPosts();
   }, [offset, limit]);
-  
+
   return (
     <Page onScrollBottom={next}>
       <Container sx={{ mt: 10 }} maxWidth="lg">

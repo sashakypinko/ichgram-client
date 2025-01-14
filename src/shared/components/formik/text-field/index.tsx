@@ -36,14 +36,14 @@ interface Props extends BaseTextFieldProps {
 
 const TextField = ({ name, maxLength, ...props }: Props): ReactElement => {
   const [field, meta] = useField<string>(name);
-  
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (maxLength && e.target.value.length >= maxLength) {
       return;
     }
-    
+
     field.onChange(e);
-  }
+  };
 
   const valueLength = field.value.length;
 

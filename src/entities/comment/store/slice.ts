@@ -104,9 +104,7 @@ const slice = createSlice({
       })
       .addCase(getComments.fulfilled, (state: CommentState, action: PayloadAction<PayloadWithLazyLoad<IComment>>) => {
         state.fetchLoading = false;
-        state.comments = action.payload.append
-          ? [...state.comments, ...action.payload.data]
-          : action.payload.data;
+        state.comments = action.payload.append ? [...state.comments, ...action.payload.data] : action.payload.data;
       })
       .addCase(getComments.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;

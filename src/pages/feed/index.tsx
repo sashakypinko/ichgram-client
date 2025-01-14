@@ -12,7 +12,7 @@ const FeedPage: FC = () => {
   const { feedPosts, fetchLoading } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
   const { offset, limit, next } = usePagination();
-  
+
   const fetchPosts = () => {
     dispatch(getFeedPosts({ offset, limit }));
   };
@@ -20,7 +20,7 @@ const FeedPage: FC = () => {
   useEffect(() => {
     fetchPosts();
   }, [offset, limit]);
-  
+
   return (
     <Page onScrollBottom={next}>
       <Container sx={{ mt: 10 }} maxWidth="lg">

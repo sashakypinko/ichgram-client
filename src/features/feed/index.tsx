@@ -5,7 +5,7 @@ import { selectPost } from '@entities/post/store/selectors';
 
 const FeedPage: FC = () => {
   const { feedPosts } = useAppSelector(selectPost);
-  
+
   return <PostList posts={feedPosts} withDetailedItems />;
 };
 

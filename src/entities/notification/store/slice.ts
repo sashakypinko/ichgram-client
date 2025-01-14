@@ -56,25 +56,31 @@ const slice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getNotifications.fulfilled, (state: NotificationState, action: PayloadAction<PayloadWithLazyLoad<INotification>>) => {
-        state.loading = false;
-        state.notifications = action.payload.append
-          ? [...state.notifications, ...action.payload.data]
-          : action.payload.data;
-      })
+      .addCase(
+        getNotifications.fulfilled,
+        (state: NotificationState, action: PayloadAction<PayloadWithLazyLoad<INotification>>) => {
+          state.loading = false;
+          state.notifications = action.payload.append
+            ? [...state.notifications, ...action.payload.data]
+            : action.payload.data;
+        },
+      )
       .addCase(getNotifications.rejected, (state: NotificationState, action: PayloadAction<unknown>) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       .addCase(markAllNotificationsAsViewed.pending, (state: NotificationState) => {
         state.viewing = true;
         state.error = null;
       })
-      .addCase(markAllNotificationsAsViewed.fulfilled, (state: NotificationState, action: PayloadAction<INotification[]>) => {
-        state.viewing = false;
-        state.notifications = action.payload;
-      })
+      .addCase(
+        markAllNotificationsAsViewed.fulfilled,
+        (state: NotificationState, action: PayloadAction<INotification[]>) => {
+          state.viewing = false;
+          state.notifications = action.payload;
+        },
+      )
       .addCase(markAllNotificationsAsViewed.rejected, (state: NotificationState, action: PayloadAction<unknown>) => {
         state.loading = false;
         state.error = action.payload as string;

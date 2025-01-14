@@ -41,10 +41,10 @@ const UserAvatar: FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  
+
   const handleAvatarClick = (e: MouseEvent) => {
     e.stopPropagation();
-   dispatch(closeAllInteractions());
+    dispatch(closeAllInteractions());
   };
 
   const avatarUrl = url || (user?.avatar ? getThumbnailMediaUrl(user?.avatar) : defaultAvatar);
@@ -55,19 +55,20 @@ const UserAvatar: FC<Props> = ({
       {withoutLink ? (
         <Avatar />
       ) : (
-        <PlainLink
-          to={generatePath(RouteEnum.PROFILE, { username: user?.username || '' })}
-          onClick={handleAvatarClick}
-        >
+        <PlainLink to={generatePath(RouteEnum.PROFILE, { username: user?.username || '' })} onClick={handleAvatarClick}>
           <Avatar />
         </PlainLink>
       )}
-      <Box>
-        {withName && <Typography variant="h5">{user?.fullName}</Typography>}
-        {withUsername && (
-          <Typography fontWeight={600} color={theme.palette.text[withName ? 'secondary' : 'primary']}>{user?.username}</Typography>
-        )}
-      </Box>
+      {(withName || withUsername) && (
+        <Box>
+          {withName && <Typography variant="h5">{user?.fullName}</Typography>}
+          {withUsername && (
+            <Typography fontWeight={600} color={theme.palette.text[withName ? 'secondary' : 'primary']}>
+              {user?.username}
+            </Typography>
+          )}
+        </Box>
+      )}
     </AvatarContainer>
   );
 };

@@ -7,7 +7,7 @@ class NotificationService extends ApiService {
     const res = await this.get('', params).then((res) => res.data);
     return res.data;
   };
-  
+
   markAllViewed = async (): Promise<INotification[]> => {
     const res = await this.post('mark-all-viewed').then((res) => res.data);
     return res.data;

@@ -20,7 +20,7 @@ const InboxHeader: FC<Props> = ({ minified }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <Header sx={{ px: 2, py: 2 }}>
+    <Header sx={{ p: minified ? 1 : 2 }}>
       {!minified && (
         <Typography sx={{ ml: 2 }} variant="h4" fontWeight={700}>
           {authUser?.username}

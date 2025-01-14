@@ -3,6 +3,8 @@ import { Box, Grid, styled, Typography, useTheme } from '@mui/material';
 import PostItem from '@entities/post/components/post-list/post-item';
 import { IPost } from '@entities/post/model/post';
 import PostDetailedItem from '@entities/post/components/post-list/post-detailed-item';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
 const PostListContainer = styled(Box)({
   display: 'flex',
@@ -18,8 +20,10 @@ interface Props {
 
 const PostList: FC<Props> = ({ posts, emptyMessage, withDetailedItems }) => {
   const theme = useTheme();
-  
+  const isSm = useIsBreakpoint(Breakpoint.SM);
+
   const ItemComponent = withDetailedItems ? PostDetailedItem : PostItem;
+  const spacing = withDetailedItems ? 6 : isSm ? 0.4 : 1;
 
   return (
     <PostListContainer>
@@ -28,7 +32,7 @@ const PostList: FC<Props> = ({ posts, emptyMessage, withDetailedItems }) => {
           {emptyMessage}
         </Typography>
       )}
-      <Grid container spacing={withDetailedItems ? 6 : 1}>
+      <Grid container spacing={spacing}>
         {posts.map((post) => (
           <Grid key={post._id} item xs={withDetailedItems ? 12 : 4} md={withDetailedItems ? 6 : 4}>
             <ItemComponent post={post} />

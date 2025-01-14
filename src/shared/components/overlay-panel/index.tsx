@@ -2,6 +2,7 @@ import { FC, ReactNode, MouseEvent, useRef, useEffect } from 'react';
 import { Box, Fade, Paper, styled, Typography } from '@mui/material';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import BackButton from '@shared/components/back-button';
 
 const Backdrop = styled(Box)({
   position: 'absolute',
@@ -14,7 +15,6 @@ const Backdrop = styled(Box)({
 });
 
 const Panel = styled(Paper)(({ theme }) => ({
-  padding: 16,
   background: '#fff',
   height: '100%',
   maxWidth: 460,
@@ -26,6 +26,17 @@ const Panel = styled(Paper)(({ theme }) => ({
     borderRadius: 0,
   },
 }));
+
+const Header = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  padding: 16,
+});
+
+const Content = styled(Box)({
+  padding: '0 16px',
+});
 
 interface Props {
   title: string;
@@ -65,8 +76,11 @@ const OverlayPanel: FC<Props> = ({ opened, onClose, title, onScrollBottom, child
     <Fade in={opened} timeout={300}>
       <Backdrop onClick={handleClose}>
         <Panel ref={panelRef} onScroll={handleScroll} elevation={isSm ? 0 : 2}>
-          <Typography variant="h3">{title}</Typography>
-          {children}
+          <Header>
+            <BackButton onClick={onClose} />
+            <Typography variant="h3">{title}</Typography>
+          </Header>
+          <Content>{children}</Content>
         </Panel>
       </Backdrop>
     </Fade>

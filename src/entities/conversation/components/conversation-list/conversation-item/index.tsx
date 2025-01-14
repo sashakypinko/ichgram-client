@@ -21,8 +21,8 @@ const ConversationItem: FC<Props> = ({ conversation, isActive, onSelect, minifie
         sx={{ px: minified ? 1 : 4, gap: 3, background: isActive ? '#EFEFEF' : 'none' }}
         onClick={onSelect}
       >
-        <ListItemAvatar sx={{ display: 'flex' }}>
-          <ConversationImage conversation={conversation} />
+        <ListItemAvatar sx={{ display: 'flex', ...(minified && { minWidth: 0 }) }}>
+          <ConversationImage conversation={conversation} size={minified ? 42 : 64} />
         </ListItemAvatar>
         {!minified && (
           <Content title={conversation.title || correspondent?.fullName || ''} lastMessage={conversation.lastMessage} />
