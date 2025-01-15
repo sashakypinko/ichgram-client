@@ -2,23 +2,30 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NotificationState } from './types';
 import { INotification } from '@entities/notification/model/notification';
 import { NotificationApi } from '@entities/notification/services/notification-service';
-import { PaginationParams } from '@app/types';
-import { PayloadWithLazyLoad } from '@app/store';
+import { PaginatedData, PaginationParams } from '@app/types';
+import { preparePaginatedResponseData } from '@app/helpers/store.helper';
+
+const initialPaginatedData: PaginatedData<INotification> = {
+  data: [],
+  offset: 0,
+  limit: 50,
+  fullyLoaded: false,
+};
 
 const initialState: NotificationState = {
-  notifications: [],
+  notifications: initialPaginatedData,
   openedOverlay: false,
   loading: false,
   viewing: false,
   error: null,
 };
 
-export const getNotifications = createAsyncThunk<PayloadWithLazyLoad<INotification>, PaginationParams>(
+export const getNotifications = createAsyncThunk<PaginatedData<INotification>, PaginationParams>(
   'notification/get',
-  async (params, { rejectWithValue }) => {
+  async ({ offset = 0, limit = 50 }, { rejectWithValue }) => {
     try {
-      const data = await NotificationApi.getAll(params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await NotificationApi.getAll({ offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch notifications');
     }
@@ -44,10 +51,10 @@ const slice = createSlice({
       state.openedOverlay = action.payload;
     },
     addNotification: (state: NotificationState, action: PayloadAction<INotification>) => {
-      state.notifications.unshift(action.payload);
+      state.notifications.data.unshift(action.payload);
     },
     excludeNotification: (state: NotificationState, action: PayloadAction<INotification>) => {
-      state.notifications = state.notifications.filter(({ _id }) => _id !== action.payload._id);
+      state.notifications.data = state.notifications.data.filter(({ _id }) => _id !== action.payload._id);
     },
   },
   extraReducers: (builder) => {
@@ -58,11 +65,9 @@ const slice = createSlice({
       })
       .addCase(
         getNotifications.fulfilled,
-        (state: NotificationState, action: PayloadAction<PayloadWithLazyLoad<INotification>>) => {
+        (state: NotificationState, action: PayloadAction<PaginatedData<INotification>>) => {
           state.loading = false;
-          state.notifications = action.payload.append
-            ? [...state.notifications, ...action.payload.data]
-            : action.payload.data;
+          state.notifications = preparePaginatedResponseData(action.payload, state.notifications.data);
         },
       )
       .addCase(getNotifications.rejected, (state: NotificationState, action: PayloadAction<unknown>) => {
@@ -78,7 +83,7 @@ const slice = createSlice({
         markAllNotificationsAsViewed.fulfilled,
         (state: NotificationState, action: PayloadAction<INotification[]>) => {
           state.viewing = false;
-          state.notifications = action.payload;
+          state.notifications.data = action.payload;
         },
       )
       .addCase(markAllNotificationsAsViewed.rejected, (state: NotificationState, action: PayloadAction<unknown>) => {

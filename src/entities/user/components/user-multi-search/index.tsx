@@ -40,7 +40,7 @@ const UserMultiSearch: FC<Props> = ({ selected, onChange }) => {
   }, [selected]);
 
   const debouncedSearch = debounce((searchValue: string) => {
-    dispatch(searchUsers(searchValue));
+    dispatch(searchUsers({ search: searchValue }));
   }, 500);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,8 +1,8 @@
 import { IUser } from '@entities/user/model/user';
-import { PaginationParams } from '@app/types';
+import { PaginatedData, PaginationParams } from '@app/types';
 
 export interface UserState {
-  searchedUsers: IUser[];
+  users: PaginatedData<IUser>;
   selectedUser: IUser | null;
   openedOverlay: boolean;
   openedFollowersDialogForId: string | null;

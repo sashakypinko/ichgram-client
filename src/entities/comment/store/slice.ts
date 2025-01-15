@@ -1,15 +1,24 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommentState, GetCommentsParams } from './types';
 import { PostApi } from '@entities/post/services/post-service';
-import { ActionWithCallbacks, PayloadWithLazyLoad } from '@app/store';
+import { ActionWithCallbacks } from '@app/store';
 import { FormikErrors } from 'formik/dist/types';
 import { AxiosError } from 'axios';
 import { IComment } from '@entities/comment/model/comment';
 import { CommentApi } from '@entities/comment/services/comment-service';
 import { CreateCommentData, UpdateCommentData } from '@entities/comment/types';
+import { PaginatedData } from '@app/types';
+import { preparePaginatedResponseData } from '@app/helpers/store.helper.ts';
+
+const initialPaginatedData: PaginatedData<IComment> = {
+  data: [],
+  offset: 0,
+  limit: 20,
+  fullyLoaded: false,
+};
 
 const initialState: CommentState = {
-  comments: [],
+  comments: initialPaginatedData,
   editableComment: null,
   fetchLoading: false,
   createLoading: false,
@@ -24,12 +33,12 @@ const syncCommentsWithUpdated = (comments: IComment[], updatedComment: IComment)
   return [...comments.slice(0, updatedCommentIdx), updatedComment, ...comments.slice(updatedCommentIdx + 1)];
 };
 
-export const getComments = createAsyncThunk<PayloadWithLazyLoad<IComment>, GetCommentsParams>(
+export const getComments = createAsyncThunk<PaginatedData<IComment>, GetCommentsParams>(
   'comment/get',
-  async ({ postId, ...params }, { rejectWithValue }) => {
+  async ({ postId, offset = 0, limit = 20 }, { rejectWithValue }) => {
     try {
-      const data = await PostApi.getComments(postId, params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await PostApi.getComments(postId, { offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch comments');
     }
@@ -102,9 +111,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getComments.fulfilled, (state: CommentState, action: PayloadAction<PayloadWithLazyLoad<IComment>>) => {
+      .addCase(getComments.fulfilled, (state: CommentState, action: PayloadAction<PaginatedData<IComment>>) => {
         state.fetchLoading = false;
-        state.comments = action.payload.append ? [...state.comments, ...action.payload.data] : action.payload.data;
+        state.comments = preparePaginatedResponseData(action.payload, state.comments.data);
       })
       .addCase(getComments.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -117,7 +126,7 @@ const slice = createSlice({
       })
       .addCase(createComment.fulfilled, (state: CommentState, action: PayloadAction<IComment>) => {
         state.createLoading = false;
-        state.comments.unshift(action.payload);
+        state.comments.data.unshift(action.payload);
       })
       .addCase(createComment.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.createLoading = false;
@@ -130,7 +139,7 @@ const slice = createSlice({
       })
       .addCase(updateComment.fulfilled, (state: CommentState, action: PayloadAction<IComment>) => {
         state.updateLoading = false;
-        state.comments = syncCommentsWithUpdated(state.comments, action.payload);
+        state.comments.data = syncCommentsWithUpdated(state.comments.data, action.payload);
       })
       .addCase(updateComment.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.updateLoading = false;
@@ -143,7 +152,7 @@ const slice = createSlice({
       })
       .addCase(removeComment.fulfilled, (state: CommentState, action: PayloadAction<IComment>) => {
         state.removeLoading = false;
-        state.comments = state.comments.filter(({ _id }) => action.payload._id !== _id);
+        state.comments.data = state.comments.data.filter(({ _id }) => action.payload._id !== _id);
       })
       .addCase(removeComment.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.removeLoading = false;
@@ -154,7 +163,7 @@ const slice = createSlice({
         state.error = null;
       })
       .addCase(toggleCommentLike.fulfilled, (state: CommentState, action: PayloadAction<IComment>) => {
-        state.comments = syncCommentsWithUpdated(state.comments, action.payload);
+        state.comments.data = syncCommentsWithUpdated(state.comments.data, action.payload);
       })
       .addCase(toggleCommentLike.rejected, (state: CommentState, action: PayloadAction<unknown>) => {
         state.error = action.payload as string;

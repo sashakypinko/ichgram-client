@@ -6,7 +6,7 @@ import { selectPost } from '@entities/post/store/selectors';
 const Trending: FC = () => {
   const { trendingPosts } = useAppSelector(selectPost);
 
-  return <PostList posts={trendingPosts} />;
+  return <PostList posts={trendingPosts.data} />;
 };
 
 export default Trending;

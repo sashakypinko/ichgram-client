@@ -4,7 +4,7 @@ import { selectPost } from '@entities/post/store/selectors';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { getSelectedPost, openPostViewDialog } from '@entities/post/store/slice';
 import { fetchGetParam } from '@shared/helpers/url-helper';
-import EmptyPosts from '@features/profile/components/empty-posts';
+import EmptyPosts from '../../../../entities/post/components/empty-posts';
 
 const ProfilePosts: FC = () => {
   const { userPosts, fetchLoading } = useAppSelector(selectPost);
@@ -13,7 +13,7 @@ const ProfilePosts: FC = () => {
 
   useEffect(() => {
     if (openPostId) {
-      const post = userPosts.find(({ _id }) => openPostId === _id);
+      const post = userPosts.data.find(({ _id }) => openPostId === _id);
 
       if (post) {
         dispatch(openPostViewDialog(post));
@@ -23,11 +23,11 @@ const ProfilePosts: FC = () => {
     }
   }, [openPostId, userPosts]);
 
-  if (!fetchLoading && !userPosts.length) {
+  if (!fetchLoading && !userPosts.data.length) {
     return <EmptyPosts />;
   }
 
-  return <PostList posts={userPosts} />;
+  return <PostList posts={userPosts.data} />;
 };
 
 export default ProfilePosts;

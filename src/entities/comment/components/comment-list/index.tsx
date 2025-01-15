@@ -20,12 +20,12 @@ const CommentList: FC<Props> = ({ emptyMessage }) => {
 
   return (
     <CommentListContainer>
-      {!comments.length && emptyMessage && (
+      {!comments.data.length && emptyMessage && (
         <Typography sx={{ p: 2 }} color={theme.palette.text.secondary}>
           {emptyMessage}
         </Typography>
       )}
-      {comments.map((comment) => (
+      {comments.data.map((comment) => (
         <CommentItem key={comment._id} comment={comment} />
       ))}
     </CommentListContainer>

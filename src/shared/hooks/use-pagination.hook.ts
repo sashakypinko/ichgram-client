@@ -1,31 +1,35 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { PaginatedData, PaginationParams } from '@app/types';
 
 type Cb = () => void;
 
-interface PaginationControl {
-  offset: number;
-  limit: number;
+export interface DataWithPaginationControl<T> {
+  data: T[];
   next: Cb;
-  prev: Cb;
   reset: Cb;
 }
 
-const usePagination = (limit = 10): PaginationControl => {
-  const [offset, setOffset] = useState<number>(0);
-
+const usePagination = <T>(
+  { data, offset, limit, fullyLoaded }: PaginatedData<T>,
+  fetchDataCallback: (params: PaginationParams) => void,
+  loadDependencies: (string | number | null | undefined)[] = [],
+): DataWithPaginationControl<T> => {
   const next = () => {
-    setOffset(offset + limit);
-  };
-
-  const prev = () => {
-    setOffset(offset - limit);
+    if (fullyLoaded) return;
+    fetchDataCallback({ offset: offset + limit, limit });
   };
 
   const reset = () => {
-    setOffset(0);
+    fetchDataCallback({});
   };
 
-  return { offset, limit, next, prev, reset };
+  useEffect(() => {
+    if (loadDependencies.length || !data.length) {
+      reset();
+    }
+  }, loadDependencies);
+
+  return { data, next, reset };
 };
 
 export default usePagination;

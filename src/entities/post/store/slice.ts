@@ -3,17 +3,25 @@ import { PostState } from './types';
 import { IPost } from '@entities/post/model/post';
 import { CreatePostData, UpdatePostData } from '@entities/post/types';
 import { PostApi } from '@entities/post/services/post-service';
-import { ActionWithCallbacks, PayloadWithLazyLoad } from '@app/store';
+import { ActionWithCallbacks } from '@app/store';
 import { FormikErrors } from 'formik/dist/types';
 import { AxiosError } from 'axios';
 import { UserApi } from '@entities/user/services/user-service';
 import { GetPostsParams } from '@entities/user/store/types';
-import { PaginationParams } from '@app/types';
+import { PaginatedData, PaginationParams } from '@app/types';
+import { preparePaginatedResponseData } from '@app/helpers/store.helper';
+
+const initialPaginatedData: PaginatedData<IPost> = {
+  data: [],
+  offset: 0,
+  limit: 10,
+  fullyLoaded: false,
+};
 
 const initialState: PostState = {
-  userPosts: [],
-  feedPosts: [],
-  trendingPosts: [],
+  userPosts: initialPaginatedData,
+  feedPosts: initialPaginatedData,
+  trendingPosts: initialPaginatedData,
   selectedPost: null,
   postFormDialogOpened: false,
   postViewDialogOpened: false,
@@ -32,36 +40,36 @@ const syncPostsWithUpdated = (posts: IPost[], updatedPost: IPost) => {
   return [...posts.slice(0, updatedPostIdx), updatedPost, ...posts.slice(updatedPostIdx + 1)];
 };
 
-export const getUserPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, GetPostsParams>(
+export const getUserPosts = createAsyncThunk<PaginatedData<IPost>, GetPostsParams>(
   'post/getUserPosts',
-  async ({ userId, ...params }, { rejectWithValue }) => {
+  async ({ userId, offset = 0, limit = 10 }, { rejectWithValue }) => {
     try {
-      const data = await UserApi.getPosts(userId, params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.getPosts(userId, { offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch user posts');
     }
   },
 );
 
-export const getFeedPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, PaginationParams>(
+export const getFeedPosts = createAsyncThunk<PaginatedData<IPost>, PaginationParams>(
   'post/getFeedPosts',
-  async (params, { rejectWithValue }) => {
+  async ({ offset = 0, limit = 10 }, { rejectWithValue }) => {
     try {
-      const data = await PostApi.getByFollowing(params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await PostApi.getByFollowing({ offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch feed posts');
     }
   },
 );
 
-export const getTrendingPosts = createAsyncThunk<PayloadWithLazyLoad<IPost>, PaginationParams>(
+export const getTrendingPosts = createAsyncThunk<PaginatedData<IPost>, PaginationParams>(
   'post/getTrendingPosts',
-  async (params, { rejectWithValue }) => {
+  async ({ offset = 0, limit = 10 }, { rejectWithValue }) => {
     try {
-      const data = await PostApi.getTrending(params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await PostApi.getTrending({ offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch trending posts');
     }
@@ -164,9 +172,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
+      .addCase(getUserPosts.fulfilled, (state: PostState, action: PayloadAction<PaginatedData<IPost>>) => {
         state.fetchLoading = false;
-        state.userPosts = action.payload.append ? [...state.userPosts, ...action.payload.data] : action.payload.data;
+        state.userPosts = preparePaginatedResponseData<IPost>(action.payload, state.userPosts.data);
       })
       .addCase(getUserPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -177,9 +185,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getFeedPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
+      .addCase(getFeedPosts.fulfilled, (state: PostState, action: PayloadAction<PaginatedData<IPost>>) => {
         state.fetchLoading = false;
-        state.feedPosts = action.payload.append ? [...state.feedPosts, ...action.payload.data] : action.payload.data;
+        state.feedPosts = preparePaginatedResponseData<IPost>(action.payload, state.feedPosts.data);
       })
       .addCase(getFeedPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -190,11 +198,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getTrendingPosts.fulfilled, (state: PostState, action: PayloadAction<PayloadWithLazyLoad<IPost>>) => {
+      .addCase(getTrendingPosts.fulfilled, (state: PostState, action: PayloadAction<PaginatedData<IPost>>) => {
         state.fetchLoading = false;
-        state.trendingPosts = action.payload.append
-          ? [...state.trendingPosts, ...action.payload.data]
-          : action.payload.data;
+        state.trendingPosts = preparePaginatedResponseData<IPost>(action.payload, state.trendingPosts.data);
       })
       .addCase(getTrendingPosts.rejected, (state: PostState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -219,7 +225,7 @@ const slice = createSlice({
       })
       .addCase(updatePost.fulfilled, (state: PostState, action: PayloadAction<IPost>) => {
         state.updateLoading = false;
-        state.userPosts = syncPostsWithUpdated(state.userPosts, action.payload);
+        state.userPosts.data = syncPostsWithUpdated(state.userPosts.data, action.payload);
 
         if (state.selectedPost?._id === action.payload._id) {
           state.selectedPost = action.payload;
@@ -236,7 +242,7 @@ const slice = createSlice({
       })
       .addCase(removePost.fulfilled, (state: PostState, action: PayloadAction<IPost>) => {
         state.removeLoading = false;
-        state.userPosts = state.userPosts.filter(({ _id }) => action.payload._id !== _id);
+        state.userPosts.data = state.userPosts.data.filter(({ _id }) => action.payload._id !== _id);
 
         if (state.selectedPost?._id === action.payload._id) {
           state.selectedPost = null;
@@ -251,9 +257,9 @@ const slice = createSlice({
         state.error = null;
       })
       .addCase(togglePostLike.fulfilled, (state: PostState, action: PayloadAction<IPost>) => {
-        state.userPosts = syncPostsWithUpdated(state.userPosts, action.payload);
-        state.feedPosts = syncPostsWithUpdated(state.feedPosts, action.payload);
-        state.trendingPosts = syncPostsWithUpdated(state.trendingPosts, action.payload);
+        state.userPosts.data = syncPostsWithUpdated(state.userPosts.data, action.payload);
+        state.feedPosts.data = syncPostsWithUpdated(state.feedPosts.data, action.payload);
+        state.trendingPosts.data = syncPostsWithUpdated(state.trendingPosts.data, action.payload);
 
         if (state.selectedPost?._id === action.payload._id) {
           state.selectedPost = action.payload;

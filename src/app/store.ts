@@ -34,8 +34,3 @@ export type ActionWithCallbacks<T, S = void, E = string> = {
   onSuccess?: S extends void ? () => void : (...args: S[]) => void;
   onError?: (error: E) => void;
 };
-
-export interface PayloadWithLazyLoad<T> {
-  append: boolean;
-  data: T[];
-}

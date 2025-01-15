@@ -3,13 +3,22 @@ import { GetFollowersParams, GetFollowingParams, SearchUsersParams, UserState } 
 import { IUser } from '@entities/user/model/user';
 import { UserApi } from '@entities/user/services/user-service';
 import { syncAuthUser } from '@features/auth/store/slice';
-import { ActionWithCallbacks, PayloadWithLazyLoad, RootState } from '@app/store';
+import { ActionWithCallbacks, RootState } from '@app/store';
 import { UpdateUserData } from '@entities/user/types';
 import { AxiosError } from 'axios';
 import { FormikErrors } from 'formik/dist/types';
+import { PaginatedData } from '@app/types';
+import { preparePaginatedResponseData } from '@app/helpers/store.helper';
+
+const initialPaginatedData: PaginatedData<IUser> = {
+  data: [],
+  offset: 0,
+  limit: 20,
+  fullyLoaded: false,
+};
 
 const initialState: UserState = {
-  searchedUsers: [],
+  users: initialPaginatedData,
   selectedUser: null,
   openedOverlay: false,
   openedFollowersDialogForId: null,
@@ -20,36 +29,36 @@ const initialState: UserState = {
   error: null,
 };
 
-export const searchUsers = createAsyncThunk<PayloadWithLazyLoad<IUser>, SearchUsersParams>(
+export const searchUsers = createAsyncThunk<PaginatedData<IUser>, SearchUsersParams>(
   'user/search',
-  async ({ search, ...params }, { rejectWithValue }) => {
+  async ({ search, offset = 0, limit = 20 }, { rejectWithValue }) => {
     try {
-      const data = await UserApi.search(search, params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.search(search, { offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to search users');
     }
   },
 );
 
-export const getUserFollowers = createAsyncThunk<PayloadWithLazyLoad<IUser>, GetFollowersParams>(
+export const getUserFollowers = createAsyncThunk<PaginatedData<IUser>, GetFollowersParams>(
   'user/getFollowers',
-  async ({ userId, ...params }, { rejectWithValue }) => {
+  async ({ userId, offset = 0, limit = 20 }, { rejectWithValue }) => {
     try {
-      const data = await UserApi.getFollowers(userId, params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.getFollowers(userId, { offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch followers');
     }
   },
 );
 
-export const getUserFollowings = createAsyncThunk<PayloadWithLazyLoad<IUser>, GetFollowingParams>(
+export const getUserFollowings = createAsyncThunk<PaginatedData<IUser>, GetFollowingParams>(
   'user/getFollowings',
-  async ({ userId, ...params }, { rejectWithValue }) => {
+  async ({ userId, offset = 0, limit = 20 }, { rejectWithValue }) => {
     try {
-      const data = await UserApi.getFollowings(userId, params);
-      return { data, append: !!params.offset && params.offset > 0 };
+      const data = await UserApi.getFollowings(userId, { offset, limit });
+      return { data, offset, limit };
     } catch (error: unknown) {
       return rejectWithValue('Failed to fetch followings');
     }
@@ -139,7 +148,7 @@ const slice = createSlice({
       state.openedOverlay = action.payload;
     },
     clearSearchedUsers: (state: UserState) => {
-      state.searchedUsers = [];
+      state.users = initialPaginatedData;
     },
     setSelectedUser: (state: UserState, action: PayloadAction<IUser>) => {
       state.selectedUser = action.payload;
@@ -151,24 +160,24 @@ const slice = createSlice({
         state.selectedUser = updatedUser;
       }
 
-      state.searchedUsers = state.searchedUsers.map((user) => (user._id === updatedUser._id ? updatedUser : user));
+      state.users.data = state.users.data.map((user) => (user._id === updatedUser._id ? updatedUser : user));
     },
     openFollowersDialog: (state: UserState, action: PayloadAction<string>) => {
       state.openedFollowersDialogForId = action.payload;
     },
     closeFollowersDialog: (state: UserState) => {
       state.openedFollowersDialogForId = null;
-      state.searchedUsers = [];
+      state.users = initialPaginatedData;
     },
     openFollowingDialog: (state: UserState, action: PayloadAction<string>) => {
       state.openedFollowingDialogForId = action.payload;
     },
     closeFollowingDialog: (state: UserState) => {
       state.openedFollowingDialogForId = null;
-      state.searchedUsers = [];
+      state.users = initialPaginatedData;
     },
     closeAllInteractions: (state: UserState) => {
-      state.searchedUsers = [];
+      state.users = initialPaginatedData;
       state.openedFollowersDialogForId = null;
       state.openedFollowingDialogForId = null;
       state.openedOverlay = false;
@@ -180,11 +189,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(searchUsers.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
+      .addCase(searchUsers.fulfilled, (state: UserState, action: PayloadAction<PaginatedData<IUser>>) => {
         state.fetchLoading = false;
-        state.searchedUsers = action.payload.append
-          ? [...state.searchedUsers, ...action.payload.data]
-          : action.payload.data;
+        state.users = preparePaginatedResponseData(action.payload, state.users.data);
       })
       .addCase(searchUsers.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -195,11 +202,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserFollowers.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
+      .addCase(getUserFollowers.fulfilled, (state: UserState, action: PayloadAction<PaginatedData<IUser>>) => {
         state.fetchLoading = false;
-        state.searchedUsers = action.payload.append
-          ? [...state.searchedUsers, ...action.payload.data]
-          : action.payload.data;
+        state.users = preparePaginatedResponseData(action.payload, state.users.data);
       })
       .addCase(getUserFollowers.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;
@@ -210,11 +215,9 @@ const slice = createSlice({
         state.fetchLoading = true;
         state.error = null;
       })
-      .addCase(getUserFollowings.fulfilled, (state: UserState, action: PayloadAction<PayloadWithLazyLoad<IUser>>) => {
+      .addCase(getUserFollowings.fulfilled, (state: UserState, action: PayloadAction<PaginatedData<IUser>>) => {
         state.fetchLoading = false;
-        state.searchedUsers = action.payload.append
-          ? [...state.searchedUsers, ...action.payload.data]
-          : action.payload.data;
+        state.users = preparePaginatedResponseData(action.payload, state.users.data);
       })
       .addCase(getUserFollowings.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.fetchLoading = false;

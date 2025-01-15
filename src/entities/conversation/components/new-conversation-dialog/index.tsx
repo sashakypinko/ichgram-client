@@ -28,7 +28,7 @@ const NewConversationDialog: FC = () => {
   const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
   const [title, setTitle] = useState<string>('');
   const { newConversationDialogOpened, loading } = useAppSelector(selectConversation);
-  const { searchedUsers } = useAppSelector(selectUser);
+  const { users } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -78,7 +78,7 @@ const NewConversationDialog: FC = () => {
       </Box>
       <Divider />
       <UserList
-        users={searchedUsers}
+        users={users.data}
         onClick={handleSelectChange}
         minHeight={600}
         emptyMessage="No account found."

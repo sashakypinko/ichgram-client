@@ -1,8 +1,8 @@
 import { IComment } from '@entities/comment/model/comment';
-import { PaginationParams } from '@app/types';
+import { PaginatedData, PaginationParams } from '@app/types';
 
 export interface CommentState {
-  comments: IComment[];
+  comments: PaginatedData<IComment>;
   editableComment: IComment | null;
   fetchLoading: boolean;
   createLoading: boolean;

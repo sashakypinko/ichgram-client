@@ -17,14 +17,14 @@ import FollowersDialog from '@entities/user/components/followers-dialog';
 import FollowingDialog from '@entities/user/components/following-dialog';
 import PostFormDialog from '@entities/post/components/post-form-dialog';
 import PostViewDialog from '@entities/post/components/post-view-dialog';
+import ErrorBoundary from '@shared/components/error-boundary';
+import MobileHeader from '@shared/components/mobile-header';
 
 import '@fontsource/montserrat/400.css';
 import '@fontsource/montserrat/500.css';
 import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import './index.css';
-import ErrorBoundary from '@shared/components/error-boundary';
-import MobileHeader from '@shared/components/mobile-header';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();

@@ -20,7 +20,7 @@ interface Props {
 }
 
 const UserListDialog: FC<Props> = ({ title, opened, onClose, onScrollBottom }) => {
-  const { searchedUsers } = useAppSelector(selectUser);
+  const { users } = useAppSelector(selectUser);
   const userListContainerRef = useRef<HTMLDivElement>();
 
   const handleScroll = () => {
@@ -37,7 +37,7 @@ const UserListDialog: FC<Props> = ({ title, opened, onClose, onScrollBottom }) =
   return (
     <Dialog maxWidth={Breakpoint.XS} open={opened} title={title} onClose={onClose}>
       <ScrollableContainer ref={userListContainerRef} onScroll={handleScroll}>
-        <UserList users={searchedUsers} actions={[FollowUserAction]} />
+        <UserList users={users.data} actions={[FollowUserAction]} />
       </ScrollableContainer>
     </Dialog>
   );

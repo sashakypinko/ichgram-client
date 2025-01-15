@@ -1,31 +1,21 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import Page from '@shared/components/page';
-import Feed from '@features/feed';
+import Feed from '@features/feed/components/feed';
 import { Container } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@app/hooks';
-import { getFeedPosts } from '@entities/post/store/slice';
-import usePagination from '@shared/hooks/use-pagination.hook';
 import CircularLoader from '@shared/components/circular-loader';
-import { selectPost } from '@entities/post/store/selectors';
+import useFeedPostsPagination from '@entities/post/hooks/use-paginated-feed-posts.hook';
+import { useAppSelector } from '@app/hooks.ts';
+import { selectPost } from '@entities/post/store/selectors.ts';
 
 const FeedPage: FC = () => {
-  const { feedPosts, fetchLoading } = useAppSelector(selectPost);
-  const dispatch = useAppDispatch();
-  const { offset, limit, next } = usePagination();
-
-  const fetchPosts = () => {
-    dispatch(getFeedPosts({ offset, limit }));
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, [offset, limit]);
+  const { fetchLoading } = useAppSelector(selectPost);
+  const { data, next } = useFeedPostsPagination();
 
   return (
     <Page onScrollBottom={next}>
       <Container sx={{ mt: 10 }} maxWidth="lg">
         <Feed />
-        {!!feedPosts.length && fetchLoading && <CircularLoader />}
+        {!!data.length && fetchLoading && <CircularLoader />}
       </Container>
     </Page>
   );

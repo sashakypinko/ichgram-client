@@ -23,19 +23,19 @@ const NotificationList: FC<Props> = ({ emptyMessage }) => {
   const theme = useTheme();
 
   useEffect(() => {
-    if (notifications.length && !opened) {
+    if (notifications.data.length && !opened) {
       dispatch(markAllNotificationsAsViewed());
     }
   }, [opened]);
 
   return (
     <ListContainer>
-      {!notifications.length && emptyMessage && (
+      {!notifications.data.length && emptyMessage && (
         <Typography sx={{ p: 2 }} color={theme.palette.text.secondary}>
           {emptyMessage}
         </Typography>
       )}
-      {notifications.map((notification) => (
+      {notifications.data.map((notification) => (
         <NotificationItem key={notification._id} notification={notification} />
       ))}
     </ListContainer>

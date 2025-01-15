@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useRef } from 'react';
 import { Dialog as MuiDialog, Grid, styled, Typography, Box } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
@@ -13,10 +13,9 @@ import PostFeedbackActions from '@entities/post/components/post-feedback-actions
 import CommentInput from '@entities/comment/components/comment-input';
 import PostActions from '@entities/post/components/post-actions';
 import { removeGetParam } from '@shared/helpers/url-helper';
-import { getComments } from '@entities/comment/store/slice';
-import usePagination from '@shared/hooks/use-pagination.hook';
 import CircularLoader from '@shared/components/circular-loader';
 import { selectComment } from '@entities/comment/store/selectors';
+import usePaginatedComments from '@entities/comment/hooks/use-paginated-comments.hook';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -57,14 +56,10 @@ const PostDate = styled(Typography)({
 
 const PostViewDialog: FC = () => {
   const { postViewDialogOpened, selectedPost } = useAppSelector(selectPost);
-  const { comments, fetchLoading } = useAppSelector(selectComment);
+  const { fetchLoading } = useAppSelector(selectComment);
   const dispatch = useAppDispatch();
-  const { offset, limit, next, reset } = usePagination();
+  const { data, next, reset } = usePaginatedComments(selectedPost?._id);
   const mainContainerRef = useRef<HTMLDivElement>();
-
-  const fetchComments = (postId: string) => {
-    dispatch(getComments({ postId, offset, limit }));
-  };
 
   const handleClose = () => {
     dispatch(closePostViewDialog());
@@ -81,12 +76,6 @@ const PostViewDialog: FC = () => {
       next();
     }
   };
-
-  useEffect(() => {
-    if (selectedPost) {
-      fetchComments(selectedPost._id);
-    }
-  }, [selectedPost, offset, limit]);
 
   if (!selectedPost) {
     return null;
@@ -128,7 +117,7 @@ const PostViewDialog: FC = () => {
               </Box>
             </Content>
             <CommentList emptyMessage="This post has no comments yet." />
-            {!!comments.length && fetchLoading && <CircularLoader />}
+            {!!data.length && fetchLoading && <CircularLoader />}
           </MainContainer>
           <Footer>
             <PostFeedbackActions post={selectedPost} />
