@@ -79,9 +79,10 @@ export const selectUserByUsername = createAsyncThunk<IUser | null, string>(
 export const updateUser = createAsyncThunk<
   IUser,
   ActionWithCallbacks<{ id: string; data: UpdateUserData }, void, FormikErrors<UpdateUserData>>
->('user/update', async ({ payload, onSuccess, onError }, { rejectWithValue }) => {
+>('user/update', async ({ payload, onSuccess, onError }, { rejectWithValue, dispatch }) => {
   try {
     const user = await UserApi.update(payload.id, payload.data);
+    dispatch(syncAuthUser(user));
     if (onSuccess) onSuccess();
     return user;
   } catch (error: unknown) {
@@ -241,9 +242,8 @@ const slice = createSlice({
         state.editLoading = true;
         state.error = null;
       })
-      .addCase(updateUser.fulfilled, (state: UserState, action: PayloadAction<IUser | null>) => {
+      .addCase(updateUser.fulfilled, (state: UserState) => {
         state.editLoading = false;
-        // TODO: sync user
       })
       .addCase(updateUser.rejected, (state: UserState, action: PayloadAction<unknown>) => {
         state.editLoading = false;
