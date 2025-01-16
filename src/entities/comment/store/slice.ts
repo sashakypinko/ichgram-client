@@ -8,7 +8,7 @@ import { IComment } from '@entities/comment/model/comment';
 import { CommentApi } from '@entities/comment/services/comment-service';
 import { CreateCommentData, UpdateCommentData } from '@entities/comment/types';
 import { PaginatedData } from '@app/types';
-import { preparePaginatedResponseData } from '@app/helpers/store.helper.ts';
+import { preparePaginatedResponseData } from '@app/helpers/store.helper';
 
 const initialPaginatedData: PaginatedData<IComment> = {
   data: [],

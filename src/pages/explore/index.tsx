@@ -6,7 +6,7 @@ import { useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
 import CircularLoader from '@shared/components/circular-loader';
 import EmptyPosts from '@entities/post/components/empty-posts';
-import useTrendingPostsPagination from '@entities/post/hooks/use-paginated-trending-posts.hook.ts';
+import useTrendingPostsPagination from '@entities/post/hooks/use-paginated-trending-posts.hook';
 
 const ExplorePage: FC = () => {
   const { fetchLoading } = useAppSelector(selectPost);

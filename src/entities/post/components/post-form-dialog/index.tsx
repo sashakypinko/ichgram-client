@@ -2,27 +2,38 @@ import { FC, useState, useMemo, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
 import { closePostFormDialog, createPost, updatePost } from '@entities/post/store/slice';
-import { Box, Dialog as MuiDialog, Grid, IconButton, styled, Typography } from '@mui/material';
+import { Box, Dialog as MuiDialog, IconButton, styled, Typography } from '@mui/material';
 import Button from '@shared/components/button';
 import MediaDropZone from '@shared/components/media-drop-zone';
 import UserAvatar from '@entities/user/components/user-avatar';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
-import MediaView from '@shared/components/media-view';
-import { Size } from '@shared/enums/size.enum';
 import { CloseRounded } from '@mui/icons-material';
 import PostTextarea from '@entities/post/components/post-form-dialog/post-textarea';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
+import PostMediaView from '@entities/post/components/post-media-view';
+import BackButton from '@shared/components/back-button';
 
-const StyledDialog = styled(MuiDialog)({
+const StyledDialog = styled(MuiDialog)(({ theme }) => ({
   '& .MuiPaper-root': {
     borderRadius: 12,
     background: '#fff',
+    overflow: 'hidden',
   },
-});
 
-const DropZoneBox = styled(Grid)({
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    height: 'calc(100% - 40px)',
+  },
+}));
+
+const DropZoneBox = styled(Box)(({ theme }) => ({
   borderRight: '1px solid #DBDBDB',
   position: 'relative',
-});
+
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    height: ' 100%',
+  },
+}));
 
 const Header = styled(Box)({
   display: 'flex',
@@ -44,6 +55,7 @@ const PostFormDialog: FC = () => {
   const { postFormDialogOpened, editablePost, updateLoading, createLoading } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
+  const isSm = useIsBreakpoint(Breakpoint.SM);
 
   useEffect(() => {
     if (editablePost) {
@@ -100,39 +112,32 @@ const PostFormDialog: FC = () => {
   return (
     <StyledDialog maxWidth="lg" open={postFormDialogOpened} onClose={handleClose} fullWidth>
       <Header>
-        <Box sx={{ p: 2 }} />
+        {isSm ? <BackButton onClick={handleClose} /> : <Box sx={{ p: 2 }} />}
         <Typography variant="h5">{editablePost ? 'Edit' : 'Create new'} post</Typography>
         <Button onClick={handleSubmit} disabled={disabled} loading={loading}>
           {editablePost ? 'Save changes' : 'Share'}
         </Button>
       </Header>
-      <Grid sx={{ minHeight: 800 }} container>
-        <DropZoneBox item xs={12} md={8}>
-          {editablePost && (
-            <MediaView
-              sx={{ borderRadius: 1 }}
-              mediaId={editablePost.mediaId}
-              size={Size.ORIGINAL}
-              withFullView={false}
-            />
-          )}
+      <Box display="grid" gridTemplateColumns={isSm ? '1fr' : '2fr 1fr'} height="80vh">
+        <DropZoneBox>
+          {editablePost && <PostMediaView post={editablePost} />}
           {mediaUrl && (
             <>
               <CloseButton color="inherit" onClick={() => setFile(null)}>
                 <CloseRounded fontSize="large" />
               </CloseButton>
-              <MediaView sx={{ borderRadius: 1 }} mediaUrl={mediaUrl} size={Size.ORIGINAL} withFullView={false} />
+              <PostMediaView post={editablePost} mediaUrl={mediaUrl} />
             </>
           )}
           {!file && !editablePost && <MediaDropZone onLoad={setFile} />}
         </DropZoneBox>
-        <Grid item xs={12} md={4}>
+        <Box>
           <Box padding={1}>
             <UserAvatar size={42} user={authUser} withUsername />
           </Box>
           <PostTextarea value={content} onChange={setContent} />
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </StyledDialog>
   );
 };

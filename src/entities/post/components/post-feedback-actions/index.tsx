@@ -6,6 +6,8 @@ import { FavoriteBorderRounded, FavoriteRounded } from '@mui/icons-material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { useAppDispatch } from '@app/hooks';
 import { togglePostLike } from '@entities/post/store/slice';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
 interface Props {
   post: IPost;
@@ -15,6 +17,7 @@ interface Props {
 const PostFeedbackActions: FC<Props> = ({ post, onCommentClick }) => {
   const authUser = useAuthUser();
   const dispatch = useAppDispatch();
+  const isSm = useIsBreakpoint(Breakpoint.SM);
 
   const toggleLike = () => {
     dispatch(togglePostLike(post._id));
@@ -24,7 +27,7 @@ const PostFeedbackActions: FC<Props> = ({ post, onCommentClick }) => {
   const LikeIcon = liked ? FavoriteRounded : FavoriteBorderRounded;
 
   return (
-    <Box>
+    <Box {...( isSm && { display: 'flex', alignItems: 'center' })}>
       <Box display="flex" alignItems="center">
         <IconButton color="inherit" onClick={toggleLike}>
           <LikeIcon color={liked ? 'error' : 'inherit'} fontSize="large" />

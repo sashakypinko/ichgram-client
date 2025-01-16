@@ -23,7 +23,7 @@ const PostList: FC<Props> = ({ posts, emptyMessage, withDetailedItems }) => {
   const isSm = useIsBreakpoint(Breakpoint.SM);
 
   const ItemComponent = withDetailedItems ? PostDetailedItem : PostItem;
-  const spacing = withDetailedItems ? 6 : isSm ? 0.4 : 1;
+  const spacing = withDetailedItems ? 4 : isSm ? 0.4 : 1;
 
   return (
     <PostListContainer>

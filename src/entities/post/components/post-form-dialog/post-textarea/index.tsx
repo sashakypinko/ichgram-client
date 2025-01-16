@@ -1,6 +1,8 @@
 import { ChangeEvent, FC } from 'react';
 import { Box, IconButton, styled, TextField, Typography } from '@mui/material';
 import { SentimentSatisfiedOutlined } from '@mui/icons-material';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
 const InputContainer = styled(Box)({
   borderBottom: '1px solid #dbdbdb',
@@ -39,6 +41,8 @@ interface Props {
 }
 
 const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
+  const isSm = useIsBreakpoint(Breakpoint.SM);
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
@@ -51,7 +55,7 @@ const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
 
   return (
     <InputContainer>
-      <StyledTextField value={value} onChange={handleChange} rows={8} multiline fullWidth />
+      <StyledTextField value={value} onChange={handleChange} rows={isSm ? 2 : 8} multiline fullWidth />
       <BottomBox>
         <IconButton>
           <SentimentSatisfiedOutlined fontSize="large" />

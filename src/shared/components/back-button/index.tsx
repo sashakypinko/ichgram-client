@@ -3,13 +3,13 @@ import { IconButton } from '@mui/material';
 import { KeyboardBackspaceRounded } from '@mui/icons-material';
 
 interface Props {
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
 }
 
 const BackButton: FC<Props> = ({ onClick, disabled }) => {
   return (
-    <IconButton color="inherit" onClick={onClick} disabled={disabled}>
+    <IconButton sx={{ p: 0 }} color="inherit" onClick={onClick} disabled={disabled}>
       <KeyboardBackspaceRounded fontSize="large" />
     </IconButton>
   );

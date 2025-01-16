@@ -11,6 +11,7 @@ const DropZoneContainer = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  minHeight: 360,
 });
 
 const Content = styled(Box)({

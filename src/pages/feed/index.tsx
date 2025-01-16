@@ -4,8 +4,8 @@ import Feed from '@features/feed/components/feed';
 import { Container } from '@mui/material';
 import CircularLoader from '@shared/components/circular-loader';
 import useFeedPostsPagination from '@entities/post/hooks/use-paginated-feed-posts.hook';
-import { useAppSelector } from '@app/hooks.ts';
-import { selectPost } from '@entities/post/store/selectors.ts';
+import { useAppSelector } from '@app/hooks';
+import { selectPost } from '@entities/post/store/selectors';
 
 const FeedPage: FC = () => {
   const { fetchLoading } = useAppSelector(selectPost);

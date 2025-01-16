@@ -5,8 +5,9 @@ import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { createComment } from '@entities/comment/store/slice';
 import { selectComment } from '@entities/comment/store/selectors';
 import { SentimentSatisfiedOutlined } from '@mui/icons-material';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
     padding: 0,
 
@@ -18,8 +19,20 @@ const StyledTextField = styled(TextField)({
       fontSize: 15,
       padding: 16,
     },
+
+    [theme.breakpoints.down(Breakpoint.SM)]: {
+      '& textarea': {
+        fontSize: 12,
+      },
+    },
+
+    [theme.breakpoints.down(Breakpoint.MD)]: {
+      '& textarea': {
+        fontSize: 13,
+      },
+    },
   },
-});
+}));
 
 const SymbolCount = styled(Typography)({
   position: 'absolute',

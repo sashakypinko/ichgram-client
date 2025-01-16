@@ -1,70 +1,71 @@
-import { FC, useRef } from 'react';
-import { Dialog as MuiDialog, Grid, styled, Typography, Box } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
+import { FC, useRef, useState } from 'react';
+import { Box, Dialog as MuiDialog, styled } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
 import { closePostViewDialog } from '@entities/post/store/slice';
-import UserAvatar from '@entities/user/components/user-avatar';
-import FollowUserAction from '@entities/user/components/user-actions/follow-user-action';
-import MediaView from '@shared/components/media-view';
-import { Size } from '@shared/enums/size.enum';
 import CommentList from '@entities/comment/components/comment-list';
 import PostFeedbackActions from '@entities/post/components/post-feedback-actions';
 import CommentInput from '@entities/comment/components/comment-input';
-import PostActions from '@entities/post/components/post-actions';
 import { removeGetParam } from '@shared/helpers/url-helper';
 import CircularLoader from '@shared/components/circular-loader';
 import { selectComment } from '@entities/comment/store/selectors';
 import usePaginatedComments from '@entities/comment/hooks/use-paginated-comments.hook';
+import PostViewHeader from '@entities/post/components/post-view-dialog/post-view-header';
+import PostViewContent from '@entities/post/components/post-view-dialog/post-view-content';
+import PostDate from '@entities/post/components/post-date';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
+import PostMediaView from '@entities/post/components/post-media-view';
 
-const StyledDialog = styled(MuiDialog)({
+const StyledDialog = styled(MuiDialog)(({ theme }) => ({
   '& .MuiPaper-root': {
     borderRadius: 12,
   },
-});
 
-const Header = styled(Box)({
-  padding: 16,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  borderBottom: '1px solid #DBDBDB',
-});
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    height: 'calc(100% - 40px)',
+  },
+}));
 
-const MainContainer = styled(Box)({
+const MainContainer = styled(Box)(({ theme }) => ({
   padding: 16,
   flexGrow: 1,
   height: 0,
   overflowY: 'auto',
-});
 
-const Content = styled(Box)({
-  display: 'flex',
-  alignItems: 'start',
-  paddingBottom: 16,
-  gap: 24,
-});
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    height: 'auto',
+  },
 
-const Footer = styled(Box)({
+  [theme.breakpoints.up(Breakpoint.SM)]: {
+    maxHeight: '100%',
+  },
+}));
+
+const Footer = styled(Box)(({ theme }) => ({
   padding: 16,
   borderTop: '1px solid #DBDBDB',
-});
 
-const PostDate = styled(Typography)({
-  color: '#737373',
-});
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    padding: 8,
+  },
+}));
 
 const PostViewDialog: FC = () => {
+  const [commentMode, setCommentMode] = useState<boolean>(false);
+
   const { postViewDialogOpened, selectedPost } = useAppSelector(selectPost);
   const { fetchLoading } = useAppSelector(selectComment);
   const dispatch = useAppDispatch();
   const { data, next, reset } = usePaginatedComments(selectedPost?._id);
   const mainContainerRef = useRef<HTMLDivElement>();
+  const isSm = useIsBreakpoint(Breakpoint.SM);
 
   const handleClose = () => {
     dispatch(closePostViewDialog());
     removeGetParam('postId');
     reset();
+    setCommentMode(false);
   };
 
   const handleScroll = () => {
@@ -77,57 +78,55 @@ const PostViewDialog: FC = () => {
     }
   };
 
+  const handleBackClick = () => {
+    if (commentMode) {
+      setCommentMode(false);
+    } else {
+      handleClose();
+    }
+  };
+
   if (!selectedPost) {
     return null;
   }
 
-  const postDate = formatDistanceToNow(selectedPost.createdAt);
-
   return (
     <StyledDialog maxWidth="xl" open={postViewDialogOpened} onClose={handleClose} fullWidth>
-      <Grid container>
-        <Grid item xs={12} md={6}>
-          <MediaView
-            sx={{ borderRadius: 1 }}
-            mediaId={selectedPost.mediaId}
-            size={Size.ORIGINAL}
-            withFullView={false}
-          />
-        </Grid>
-        <Grid display="flex" flexDirection="column" item xs={12} md={6}>
-          <Header>
-            <Box display="flex" alignItems="center" gap={2}>
-              <UserAvatar size={42} user={selectedPost.author} withUsername />
-              <Typography sx={{ ml: 2 }} variant="h4">
-                •
-              </Typography>
-              <FollowUserAction user={selectedPost.author} variant="text" />
-            </Box>
-            <PostActions post={selectedPost} />
-          </Header>
-          <MainContainer ref={mainContainerRef} onScroll={handleScroll}>
-            <Content>
-              <UserAvatar size={42} user={selectedPost.author} />
-              <Box>
-                <Typography sx={{ pr: 1 }} fontWeight={600} component="span">
-                  {selectedPost.author.username}
-                </Typography>
-                <Typography component="span">{selectedPost.content}</Typography>
-                <PostDate variant="body2">{postDate}.</PostDate>
-              </Box>
-            </Content>
-            <CommentList emptyMessage="This post has no comments yet." />
-            {!!data.length && fetchLoading && <CircularLoader />}
+      {isSm && <PostViewHeader post={selectedPost} onBackClick={handleBackClick} />}
+      <Box display="grid" gridTemplateColumns={isSm ? '1fr' : '2fr 1fr'}>
+        <Box width="100%">
+          {!commentMode && (
+            <PostMediaView post={selectedPost} />
+          )}
+        </Box>
+        <Box display="flex" flexDirection="column" width="100%">
+          {!isSm && <PostViewHeader post={selectedPost} />}
+          <MainContainer
+            sx={{ maxHeight: commentMode ? '50vh' : '20vh' }}
+            ref={mainContainerRef}
+            onScroll={handleScroll}
+          >
+            <PostViewContent post={selectedPost} />
+            {(!isSm || commentMode) && (
+              <>
+                <CommentList emptyMessage="This post has no comments yet." />
+                {!!data.length && fetchLoading && <CircularLoader />}
+              </>
+            )}
           </MainContainer>
           <Footer>
-            <PostFeedbackActions post={selectedPost} />
-            <PostDate paddingX={1} variant="body2">
-              {postDate}
-            </PostDate>
-            <CommentInput postId={selectedPost._id} />
+            <PostFeedbackActions post={selectedPost} onCommentClick={() => isSm && setCommentMode(!commentMode)} />
+            {(!isSm || commentMode) && (
+              <>
+                <Box paddingX={1}>
+                  <PostDate post={selectedPost} />
+                </Box>
+                <CommentInput postId={selectedPost._id} />
+              </>
+            )}
           </Footer>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </StyledDialog>
   );
 };
