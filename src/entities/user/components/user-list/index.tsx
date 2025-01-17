@@ -8,6 +8,7 @@ const UserListContainer = styled(List)({
   display: 'flex',
   flexDirection: 'column',
   gap: 8,
+  overflowY: 'auto'
 });
 
 interface Props {

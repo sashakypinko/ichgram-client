@@ -10,7 +10,7 @@ const FeedPage: FC = () => {
   return (
     <>
       <PostList posts={feedPosts.data} withDetailedItems />
-      <EmptyFeed />
+      {feedPosts.fullyLoaded && <EmptyFeed />}
     </>
   );
 };

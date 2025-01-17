@@ -3,11 +3,15 @@ import { Box, Dialog as MuiDialog, styled, Typography } from '@mui/material';
 import { CloseRounded } from '@mui/icons-material';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 
-const StyledDialog = styled(MuiDialog)({
+const StyledDialog = styled(MuiDialog)(({ theme }) => ({
   '& .MuiPaper-root': {
     borderRadius: 12,
   },
-});
+
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    maxHeight: 'calc(100% - 40px)',
+  },
+}));
 
 const Header = styled(Box)({
   display: 'flex',

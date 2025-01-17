@@ -27,7 +27,16 @@ const StyledDialog = styled(MuiDialog)(({ theme }) => ({
   },
 }));
 
-const MainContainer = styled(Box)(({ theme }) => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '2fr 1fr',
+
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    gridTemplateColumns: '1fr',
+  },
+}));
+
+const MainContent = styled(Box)(({ theme }) => ({
   padding: 16,
   flexGrow: 1,
   height: 0,
@@ -93,7 +102,7 @@ const PostViewDialog: FC = () => {
   return (
     <StyledDialog maxWidth="xl" open={postViewDialogOpened} onClose={handleClose} fullWidth>
       {isSm && <PostViewHeader post={selectedPost} onBackClick={handleBackClick} />}
-      <Box display="grid" gridTemplateColumns={isSm ? '1fr' : '2fr 1fr'}>
+      <StyledContainer>
         <Box width="100%">
           {!commentMode && (
             <PostMediaView post={selectedPost} />
@@ -101,7 +110,7 @@ const PostViewDialog: FC = () => {
         </Box>
         <Box display="flex" flexDirection="column" width="100%">
           {!isSm && <PostViewHeader post={selectedPost} />}
-          <MainContainer
+          <MainContent
             sx={{ maxHeight: commentMode ? '50vh' : '20vh' }}
             ref={mainContainerRef}
             onScroll={handleScroll}
@@ -113,7 +122,7 @@ const PostViewDialog: FC = () => {
                 {!!data.length && fetchLoading && <CircularLoader />}
               </>
             )}
-          </MainContainer>
+          </MainContent>
           <Footer>
             <PostFeedbackActions post={selectedPost} onCommentClick={() => isSm && setCommentMode(!commentMode)} />
             {(!isSm || commentMode) && (
@@ -126,7 +135,7 @@ const PostViewDialog: FC = () => {
             )}
           </Footer>
         </Box>
-      </Box>
+      </StyledContainer>
     </StyledDialog>
   );
 };

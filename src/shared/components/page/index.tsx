@@ -16,10 +16,11 @@ const StyledPage = styled(Box)(({ theme }) => ({
 interface Props {
   direction?: 'row' | 'column';
   onScrollBottom?: () => void;
+  paddingTop?: number;
   children: ReactNode;
 }
 
-const Page: FC<Props> = ({ direction = 'row', onScrollBottom, children }) => {
+const Page: FC<Props> = ({ direction = 'row', onScrollBottom, paddingTop = 0, children }) => {
   const pageRef = useRef<HTMLDivElement>();
 
   const handleScroll = () => {
@@ -33,7 +34,7 @@ const Page: FC<Props> = ({ direction = 'row', onScrollBottom, children }) => {
   };
 
   return (
-    <StyledPage ref={pageRef} onScroll={handleScroll} flexDirection={direction}>
+    <StyledPage sx={{ paddingTop }} ref={pageRef} onScroll={handleScroll} flexDirection={direction}>
       {children}
     </StyledPage>
   );
