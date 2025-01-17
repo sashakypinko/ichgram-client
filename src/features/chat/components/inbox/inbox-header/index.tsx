@@ -1,9 +1,11 @@
 import { FC } from 'react';
 import { Box, IconButton, styled, Typography } from '@mui/material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
-import { DriveFileRenameOutlineRounded } from '@mui/icons-material';
+import { ArrowBackIosNewRounded, DriveFileRenameOutlineRounded } from '@mui/icons-material';
 import { useAppDispatch } from '@app/hooks';
 import { openNewConversationDialog } from '@entities/conversation/store/slice';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook.ts';
+import Breakpoint from '@shared/enums/breakpoint.enum.ts';
 
 const Header = styled(Box)({
   display: 'flex',
@@ -12,22 +14,31 @@ const Header = styled(Box)({
 });
 
 interface Props {
-  minified?: boolean;
+  minified: boolean;
+  onMinifiedChange: (newValue: boolean) => void;
 }
 
-const InboxHeader: FC<Props> = ({ minified }) => {
+const InboxHeader: FC<Props> = ({ minified, onMinifiedChange }) => {
   const authUser = useAuthUser();
   const dispatch = useAppDispatch();
+  const isMd = useIsBreakpoint(Breakpoint.MD);
 
   return (
     <Header sx={{ p: minified ? 1 : 2 }}>
-      {!minified && (
-        <Typography sx={{ ml: 2 }} variant="h4" fontWeight={700}>
-          {authUser?.username}
-        </Typography>
-      )}
+      <Box display="flex" alignItems="center">
+        {!isMd && (
+          <IconButton color="inherit" onClick={() => onMinifiedChange(!minified)}>
+            <ArrowBackIosNewRounded />
+          </IconButton>
+        )}
+        {!minified && (
+          <Typography sx={{ ml: 2 }} variant="h4" fontWeight={700}>
+            {authUser?.username}
+          </Typography>
+        )}
+      </Box>
       <IconButton color="inherit" onClick={() => dispatch(openNewConversationDialog())}>
-        <DriveFileRenameOutlineRounded fontSize="large" />
+        <DriveFileRenameOutlineRounded fontSize={minified ? 'inherit' : 'large'} />
       </IconButton>
     </Header>
   );

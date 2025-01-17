@@ -22,12 +22,23 @@ const ConversationItem: FC<Props> = ({ conversation, isActive, onSelect, minifie
         onClick={onSelect}
       >
         <ListItemAvatar sx={{ display: 'flex', ...(minified && { minWidth: 0 }) }}>
-          <ConversationImage conversation={conversation} size={minified ? 42 : 64} />
+          <ConversationImage conversation={conversation} size={66} />
         </ListItemAvatar>
         {!minified && (
           <Content title={conversation.title || correspondent?.fullName || ''} lastMessage={conversation.lastMessage} />
         )}
-        {conversation.hasUnread && <Badge color="primary" variant="dot" badgeContent=" " />}
+        {conversation.hasUnread && (
+          <Badge 
+            sx={minified ? {
+              position: 'absolute',
+              right: 16,
+              top: 16,
+            } : {}}
+            color="primary"
+            variant="dot"
+            badgeContent=" " 
+          />
+        )}
       </ListItemButton>
     </ListItem>
   );

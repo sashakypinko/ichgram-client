@@ -69,7 +69,7 @@ const slice = createSlice({
   name: 'conversation',
   initialState,
   reducers: {
-    setCurrentConversation: (state: ConversationState, action: PayloadAction<IConversation>) => {
+    setCurrentConversation: (state: ConversationState, action: PayloadAction<IConversation | null>) => {
       state.currentConversation = action.payload;
     },
     openNewConversationDialog: (state: ConversationState) => {

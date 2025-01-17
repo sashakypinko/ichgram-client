@@ -34,6 +34,7 @@ const NewConversationDialog: FC = () => {
 
   const handleClose = () => {
     dispatch(closeNewConversationDialog());
+    dispatch(clearSearchedUsers());
     setSelectedUsers([]);
   };
 
