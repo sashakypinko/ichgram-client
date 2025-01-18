@@ -4,8 +4,8 @@ import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { ArrowBackIosNewRounded, DriveFileRenameOutlineRounded } from '@mui/icons-material';
 import { useAppDispatch } from '@app/hooks';
 import { openNewConversationDialog } from '@entities/conversation/store/slice';
-import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook.ts';
-import Breakpoint from '@shared/enums/breakpoint.enum.ts';
+import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
 
 const Header = styled(Box)({
   display: 'flex',

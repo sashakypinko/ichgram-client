@@ -1,11 +1,11 @@
-import { ChangeEvent, FC, KeyboardEvent, useState } from 'react';
-import { Box, IconButton, styled, TextField, Typography } from '@mui/material';
+import { ChangeEvent, FC, KeyboardEvent, useRef, useState } from 'react';
+import { Box, styled, TextField, Typography } from '@mui/material';
 import Button from '@shared/components/button';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { createComment } from '@entities/comment/store/slice';
 import { selectComment } from '@entities/comment/store/selectors';
-import { SentimentSatisfiedOutlined } from '@mui/icons-material';
 import Breakpoint from '@shared/enums/breakpoint.enum';
+import EmojiPickers from '@shared/components/emoji-picker';
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
@@ -48,17 +48,29 @@ interface Props {
 
 const CommentInput: FC<Props> = ({ postId, maxLength = 256 }) => {
   const [text, setText] = useState<string>('');
+  const [cursorPosition, setCursorPosition] = useState<number>(0);
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const { createLoading } = useAppSelector(selectComment);
   const dispatch = useAppDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    changeText(e.target.value);
+  };
 
-    if (newValue.length > maxLength) {
+  const changeText = (newText: string) => {
+    if (newText.length > maxLength) {
       return;
     }
 
-    setText(e.target.value);
+    setText(newText);
+  };
+
+  const handleClick = () => {
+    if (inputRef.current) {
+      const position = inputRef.current.selectionStart;
+      setCursorPosition(position || 0);
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -81,11 +93,11 @@ const CommentInput: FC<Props> = ({ postId, maxLength = 256 }) => {
 
   return (
     <Box position="relative" display="flex" alignItems="end" gap={2}>
-      <IconButton>
-        <SentimentSatisfiedOutlined fontSize="large" />
-      </IconButton>
+      <EmojiPickers value={text} cursorPosition={cursorPosition} onChange={changeText} />
       <StyledTextField
+        inputRef={inputRef}
         value={text}
+        onClick={handleClick}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Add a comment..."

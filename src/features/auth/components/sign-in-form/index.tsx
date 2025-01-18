@@ -40,7 +40,7 @@ const SignInForm: FC = () => {
         onSuccess: () => {
           setSubmitting(false);
           resetForm();
-          window.location.reload();
+          // window.location.reload();
         },
         onError: (errors: FormikErrors<UserCredentials>) => {
           setSubmitting(false);
@@ -52,7 +52,7 @@ const SignInForm: FC = () => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>
-      {({ isSubmitting, isValid, dirty }) => {
+      {({ isSubmitting, isValid }) => {
         return (
           <StyledForm>
             <TextField placeholder="Username or email" name="username" fullWidth />
@@ -62,7 +62,7 @@ const SignInForm: FC = () => {
               type="submit"
               variant="contained"
               loading={isSubmitting}
-              disabled={!dirty || !isValid}
+              disabled={!isValid}
               fullWidth
             >
               Log in

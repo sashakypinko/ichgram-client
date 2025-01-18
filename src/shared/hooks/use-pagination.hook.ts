@@ -13,6 +13,7 @@ const usePagination = <T>(
   { data, offset, limit, fullyLoaded }: PaginatedData<T>,
   fetchDataCallback: (params: PaginationParams) => void,
   loadDependencies: (string | number | null | undefined)[] = [],
+  reloadOnMounted: boolean = false,
 ): DataWithPaginationControl<T> => {
   const next = () => {
     if (fullyLoaded) return;
@@ -24,7 +25,7 @@ const usePagination = <T>(
   };
 
   useEffect(() => {
-    if (loadDependencies.length || !data.length) {
+    if (loadDependencies.length || reloadOnMounted || !data.length) {
       reset();
     }
   }, loadDependencies);

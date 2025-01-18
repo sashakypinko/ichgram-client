@@ -28,14 +28,23 @@ const CloseButton = styled(CloseRounded)({
 interface Props {
   open: boolean;
   title: string;
+  minHeight?: string | number;
   maxWidth?: Breakpoint;
   onClose: () => void;
   children: ReactNode;
 }
 
-const Dialog: FC<Props> = ({ open, title, maxWidth, onClose, children }) => {
+const Dialog: FC<Props> = ({ open, title, minHeight, maxWidth, onClose, children }) => {
   return (
-    <StyledDialog maxWidth={maxWidth} onClose={onClose} open={open} fullWidth>
+    <StyledDialog
+      PaperProps={{
+        sx: { minHeight },
+      }}
+      maxWidth={maxWidth}
+      onClose={onClose}
+      open={open}
+      fullWidth
+    >
       <Header>
         <Box sx={{ p: 2 }} />
         <Typography variant="h5">{title}</Typography>

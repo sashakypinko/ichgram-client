@@ -1,10 +1,11 @@
 import { FC, useState } from 'react';
-import { Dialog as MuiDialog, styled, Box, IconButton } from '@mui/material';
-import { useAppDispatch } from '@app/hooks';
+import { Dialog as MuiDialog, styled, Box, IconButton, CircularProgress } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { MoreHoriz } from '@mui/icons-material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { openPostFormDialog, removePost } from '@entities/post/store/slice';
 import { IPost } from '@entities/post/model/post';
+import { selectPost } from '@entities/post/store/selectors';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -45,6 +46,7 @@ interface Props {
 const PostActions: FC<Props> = ({ post }) => {
   const [opened, setOpened] = useState<boolean>(false);
 
+  const { removeLoading } = useAppSelector(selectPost);
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
 
@@ -72,7 +74,9 @@ const PostActions: FC<Props> = ({ post }) => {
       </IconButton>
       <StyledDialog maxWidth="xs" open={opened} onClose={() => setOpened(false)} fullWidth>
         <ActionsList>
-          <DangerActionItem onClick={handleDelete}>Delete</DangerActionItem>
+          <DangerActionItem {...(removeLoading ? {} : { onClick: handleDelete })}>
+            {removeLoading ? <CircularProgress color="inherit" size={20} /> : 'Delete'}
+          </DangerActionItem>
           <ActionItem onClick={handleEdit}>Edit</ActionItem>
           <ActionItem onClick={() => setOpened(false)}>Cancel</ActionItem>
         </ActionsList>

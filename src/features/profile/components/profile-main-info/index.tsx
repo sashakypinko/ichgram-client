@@ -13,13 +13,13 @@ import MessageUserAction from '@entities/user/components/user-actions/message-us
 import FollowUserAction from '@entities/user/components/user-actions/follow-user-action';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import EditUserAction from '@entities/user/components/user-actions/edit-user-action';
+import LogoutButton from '@features/auth/components/logout-button';
 
 const MainContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'start',
   gap: 80,
   padding: 16,
-  paddingBottom: 80,
 
   [theme.breakpoints.down(Breakpoint.MD)]: {
     gap: 16,
@@ -34,11 +34,15 @@ const InfoContainer = styled(Box)({
   gap: 16,
 });
 
-const InfoRow = styled(Box)({
+const InfoRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: 16,
-});
+
+  [theme.breakpoints.down(Breakpoint.MD)]: {
+    justifyContent: 'center',
+  },
+}));
 
 const ProfileMainInfo: FC = () => {
   const { selectedUser } = useAppSelector(selectUser);
@@ -57,6 +61,7 @@ const ProfileMainInfo: FC = () => {
           <EditUserAction user={selectedUser} />
           <FollowUserAction user={selectedUser} />
           <MessageUserAction user={selectedUser} />
+          <LogoutButton user={selectedUser} />
         </InfoRow>
         <InfoRow>
           <ShowPostsAction user={selectedUser} />

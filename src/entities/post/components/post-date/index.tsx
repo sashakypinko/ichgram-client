@@ -13,10 +13,8 @@ interface Props {
 
 const PostDate: FC<Props> = ({ post }) => {
   const postDate = formatDistanceToNow(post.createdAt);
-  
-  return (
-    <Date variant="body2">{postDate}.</Date>
-  );
+
+  return <Date variant="body2">{postDate}.</Date>;
 };
 
 export default PostDate;
