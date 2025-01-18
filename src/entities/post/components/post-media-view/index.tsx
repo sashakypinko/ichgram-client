@@ -22,7 +22,7 @@ const PostMediaView: FC<Props> = ({ post, mediaUrl }) => {
       }}
       mediaId={post?.mediaId}
       mediaUrl={mediaUrl}
-      size={Size.ORIGINAL}
+      size={Size.LARGE}
       withFullView={false}
     />
   );

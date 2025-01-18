@@ -5,7 +5,7 @@ import { MoreHoriz } from '@mui/icons-material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 import { openPostFormDialog, removePost } from '@entities/post/store/slice';
 import { IPost } from '@entities/post/model/post';
-import { selectPost } from '@entities/post/store/selectors.ts';
+import { selectPost } from '@entities/post/store/selectors';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -74,7 +74,7 @@ const PostActions: FC<Props> = ({ post }) => {
       </IconButton>
       <StyledDialog maxWidth="xs" open={opened} onClose={() => setOpened(false)} fullWidth>
         <ActionsList>
-          <DangerActionItem {...removeLoading ? {} : {onClick: handleDelete}}>
+          <DangerActionItem {...(removeLoading ? {} : { onClick: handleDelete })}>
             {removeLoading ? <CircularProgress color="inherit" size={20} /> : 'Delete'}
           </DangerActionItem>
           <ActionItem onClick={handleEdit}>Edit</ActionItem>

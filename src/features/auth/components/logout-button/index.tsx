@@ -1,10 +1,11 @@
-import { FC } from 'react';
 import Button from '@shared/components/button';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { logout } from '@features/auth/store/slice';
 import { selectAuth } from '@features/auth/store/selectors';
+import { UserAction } from '@entities/user/types';
+import VisibleForOwner from '@entities/user/hoc/visible-for-owner.hoc';
 
-const LogoutButton: FC = () => {
+const LogoutButton: UserAction = () => {
   const { loading } = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
@@ -26,4 +27,4 @@ const LogoutButton: FC = () => {
   );
 };
 
-export default LogoutButton;
+export default VisibleForOwner(LogoutButton);

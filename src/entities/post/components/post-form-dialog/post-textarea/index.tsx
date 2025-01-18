@@ -42,7 +42,7 @@ interface Props {
 
 const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
   const isSm = useIsBreakpoint(Breakpoint.SM);
-  
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 

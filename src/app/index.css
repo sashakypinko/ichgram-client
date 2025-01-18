@@ -2,6 +2,12 @@ html {
   font-size: 14px;
 }
 
+html,
+body {
+  overflow-y: hidden;
+  height: 100%;
+}
+
 .highlight {
   background-color: #ffdd70;
 }

@@ -103,18 +103,10 @@ const PostViewDialog: FC = () => {
     <StyledDialog maxWidth="xl" open={postViewDialogOpened} onClose={handleClose} fullWidth>
       {isSm && <PostViewHeader post={selectedPost} onBackClick={handleBackClick} />}
       <StyledContainer>
-        <Box width="100%">
-          {!commentMode && (
-            <PostMediaView post={selectedPost} />
-          )}
-        </Box>
+        <Box width="100%">{!commentMode && <PostMediaView post={selectedPost} />}</Box>
         <Box display="flex" flexDirection="column" width="100%">
           {!isSm && <PostViewHeader post={selectedPost} />}
-          <MainContent
-            sx={{ maxHeight: commentMode ? '50vh' : '20vh' }}
-            ref={mainContainerRef}
-            onScroll={handleScroll}
-          >
+          <MainContent sx={{ maxHeight: commentMode ? '50vh' : '20vh' }} ref={mainContainerRef} onScroll={handleScroll}>
             <PostViewContent post={selectedPost} />
             {(!isSm || commentMode) && (
               <>

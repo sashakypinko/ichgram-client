@@ -14,11 +14,11 @@ const ExplorePage: FC = () => {
   const { fetchLoading } = useAppSelector(selectPost);
   const { data, next } = useTrendingPostsPagination();
   const isSm = useIsBreakpoint(Breakpoint.SM);
-  
+
   return (
     <Page onScrollBottom={next}>
-      <Container sx={{ pt: isSm ? 16: 10 }} maxWidth="lg">
-        {(!fetchLoading && !data.length) && <EmptyPosts />}
+      <Container sx={{ pt: isSm ? 16 : 10 }} maxWidth="lg">
+        {!fetchLoading && !data.length && <EmptyPosts />}
         <Trending />
         {!!data.length && fetchLoading && <CircularLoader />}
       </Container>

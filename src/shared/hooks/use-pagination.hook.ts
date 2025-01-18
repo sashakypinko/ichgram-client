@@ -25,7 +25,7 @@ const usePagination = <T>(
   };
 
   useEffect(() => {
-    if (loadDependencies.length || (reloadOnMounted || !data.length)) {
+    if (loadDependencies.length || reloadOnMounted || !data.length) {
       reset();
     }
   }, loadDependencies);

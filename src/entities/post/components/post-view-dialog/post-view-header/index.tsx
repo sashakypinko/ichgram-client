@@ -27,7 +27,7 @@ interface Props {
 
 const PostViewHeader: FC<Props> = ({ post, onBackClick }) => {
   const isSm = useIsBreakpoint(Breakpoint.SM);
-  
+
   return (
     <Header>
       <Box display="flex" alignItems="center" gap={isSm ? 1 : 2}>

@@ -61,7 +61,7 @@ const ProfileMainInfo: FC = () => {
           <EditUserAction user={selectedUser} />
           <FollowUserAction user={selectedUser} />
           <MessageUserAction user={selectedUser} />
-          <LogoutButton />
+          <LogoutButton user={selectedUser} />
         </InfoRow>
         <InfoRow>
           <ShowPostsAction user={selectedUser} />

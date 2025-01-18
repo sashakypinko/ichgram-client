@@ -4,7 +4,7 @@ import usePagination, { DataWithPaginationControl } from '@shared/hooks/use-pagi
 import { INotification } from '@entities/notification/model/notification';
 import { selectNotification } from '@entities/notification/store/selectors';
 import { getNotifications } from '@entities/notification/store/slice';
-import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 
 const usePaginatedNotifications = (): DataWithPaginationControl<INotification> => {
   const { notifications } = useAppSelector(selectNotification);
