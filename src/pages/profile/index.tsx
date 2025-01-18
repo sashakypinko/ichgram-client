@@ -6,11 +6,23 @@ import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectUserByUsername } from '@entities/user/store/slice';
 import Page from '@shared/components/page';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
-import { Container } from '@mui/material';
+import { Container, Divider, styled } from '@mui/material';
 import { selectPost } from '@entities/post/store/selectors';
 import { selectUser } from '@entities/user/store/selectors';
 import CircularLoader from '@shared/components/circular-loader';
 import useUserPostsPagination from '@entities/post/hooks/use-paginated-user-posts.hook';
+import Breakpoint from '@shared/enums/breakpoint.enum';
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 64,
+  padding: '64px 0',
+
+  [theme.breakpoints.down(Breakpoint.MD)]: {
+    gap: 16,
+  },
+}));
 
 const ProfilePage: FC = () => {
   const { username } = useParams();
@@ -34,11 +46,12 @@ const ProfilePage: FC = () => {
 
   return (
     <Page direction="column" onScrollBottom={next}>
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <StyledContainer maxWidth="lg">
         <ProfileMainInfo />
+        <Divider />
         <ProfilePosts />
         {!!userPosts.length && fetchLoading && <CircularLoader />}
-      </Container>
+      </StyledContainer>
     </Page>
   );
 };

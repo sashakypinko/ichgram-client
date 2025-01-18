@@ -30,7 +30,7 @@ const UserOverlayPanel: FC = () => {
           <SearchField onSearch={setSearch} />
         </Box>
       )}
-      <UserList users={data} hoverActions={[MessageUserAction]} />
+      <UserList users={data} hoverActions={[MessageUserAction]} emptyMessage="No account found." />
     </OverlayPanel>
   );
 };

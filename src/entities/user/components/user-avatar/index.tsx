@@ -1,7 +1,7 @@
 import { FC, MouseEvent } from 'react';
 import { generatePath } from 'react-router-dom';
 import { Box, styled, Typography, useTheme } from '@mui/material';
-import defaultAvatar from '@assets/img/default-avatar.png';
+import defaultAvatar from '@assets/img/default-avatar.jpg';
 import { IUser } from '@entities/user/model/user';
 import { closeAllInteractions } from '@entities/user/store/slice';
 import PlainLink from '@shared/components/plain-link';

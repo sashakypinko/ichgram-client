@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Box, CircularProgress, styled, SxProps } from '@mui/material';
+import { Box, styled, SxProps } from '@mui/material';
 import MediaType from '@shared/enums/media-type.enum';
 import Image from './image';
 import Video from './video';
@@ -13,6 +13,7 @@ import { MediaData, MediaViewComponent } from '@shared/components/media-view/typ
 import brokenFileImg from '@assets/img/broken-file.png';
 import { getMediaUrl, getOriginalMediaUrl } from '@shared/helpers/media-helper';
 import { Size } from '@shared/enums/size.enum';
+import MediaLoader from '@shared/components/media-view/media-loader';
 
 const MediaContainer = styled(Box)({
   display: 'flex',
@@ -75,7 +76,7 @@ const MediaView: FC<Props> = ({ mediaId = null, mediaUrl = '', sx, size = Size.S
   }, [originalMediaUrl]);
 
   if (loading) {
-    return <CircularProgress />;
+    return <MediaLoader />;
   }
 
   const MediaComponent = mediaComponents[mediaData?.type];

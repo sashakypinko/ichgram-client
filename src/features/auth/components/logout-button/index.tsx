@@ -20,7 +20,7 @@ const LogoutButton: FC = () => {
   };
 
   return (
-    <Button variant="contained" onClick={handleLogout} loading={loading}>
+    <Button variant="contained" color="inherit" onClick={handleLogout} loading={loading}>
       Logout
     </Button>
   );
