@@ -55,7 +55,14 @@ const PostTextarea: FC<Props> = ({ value, onChange, maxLength = 2200 }) => {
 
   return (
     <InputContainer>
-      <StyledTextField value={value} onChange={handleChange} rows={isSm ? 2 : 8} multiline fullWidth />
+      <StyledTextField
+        placeholder="Add description here..."
+        value={value}
+        onChange={handleChange}
+        rows={isSm ? 2 : 8}
+        multiline
+        fullWidth
+      />
       <BottomBox>
         <IconButton>
           <SentimentSatisfiedOutlined fontSize="large" />

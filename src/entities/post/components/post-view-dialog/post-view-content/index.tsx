@@ -7,16 +7,12 @@ import Breakpoint from '@shared/enums/breakpoint.enum';
 import { shortenString } from '@shared/helpers/string-helper';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 
-const Content = styled(Box)(({ theme }) => ({
+const Content = styled(Box)({
   display: 'flex',
   alignItems: 'start',
   paddingBottom: 16,
   gap: 24,
-
-  [theme.breakpoints.down(Breakpoint.SM)]: {
-    paddingBottom: 0,
-  },
-}));
+});
 
 interface Props {
   post: IPost;

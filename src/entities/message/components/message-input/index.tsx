@@ -1,5 +1,6 @@
-import { ChangeEvent, FC, KeyboardEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Box, IconButton, styled, TextField } from '@mui/material';
+import { SendRounded } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { sendMessage, updateMessage } from '@entities/message/store/slice';
 import { selectMessage } from '@entities/message/store/selectors';
@@ -7,7 +8,9 @@ import { Media } from '@shared/components/icons';
 import HiddenFileInput from '@shared/components/hidden-file-input';
 import Extensions from '@shared/enums/extensions.enum';
 import Thumbnail from '@shared/components/thumbnail';
-import { SendRounded } from '@mui/icons-material';
+import { validateFileSize } from '@shared/helpers/file-helper';
+import useSnackbar from '@shared/components/snackbar/hooks/use-snackbar.hook';
+import EmojiPickers from '@shared/components/emoji-picker';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   padding: 8,
@@ -26,7 +29,7 @@ const StyledTextField = styled(TextField)({
 
     '& textarea': {
       fontSize: 15,
-      padding: '0 40px',
+      padding: '0 16px',
     },
   },
 });
@@ -40,15 +43,23 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
   const [text, setText] = useState<string>('');
   const [media, setMedia] = useState<File | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState<boolean>(false);
+  const [cursorPosition, setCursorPosition] = useState<number>(0);
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const { sending, editingMessage, replyingMessage } = useAppSelector(selectMessage);
   const dispatch = useAppDispatch();
+  const { errorSnackbar } = useSnackbar();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 512) {
+    changeText(e.target.value);
+  };
+
+  const changeText = (newText: string) => {
+    if (newText.length > 512) {
       return;
     }
-    setText(e.target.value);
+
+    setText(newText);
   };
 
   const submit = () => {
@@ -63,6 +74,9 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
             content: text,
           },
           onSuccess: onSent,
+          onError: () => {
+            errorSnackbar("Something went wrong. Can't send message!");
+          },
         }),
       );
       return;
@@ -79,6 +93,23 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
         onSuccess: onSent,
       }),
     );
+  };
+
+  const handleClick = () => {
+    if (inputRef.current) {
+      const position = inputRef.current.selectionStart;
+      setCursorPosition(position || 0);
+    }
+  };
+
+  const handleSelectFile = ([file]: FileList) => {
+    if (!file) return;
+
+    if (validateFileSize(file, 20)) {
+      setMedia(file);
+    } else {
+      errorSnackbar('The file size cannot be greater then 20MB.');
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -109,15 +140,18 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
+        onClick={handleClick}
         placeholder="Message"
         disabled={sending}
+        inputRef={inputRef}
         InputProps={{
+          startAdornment: <EmojiPickers value={text} cursorPosition={cursorPosition} onChange={changeText} />,
           endAdornment: (
             <Box display="flex" alignItems="center">
               <IconButton component="label">
                 <HiddenFileInput
                   accept={[Extensions.PNG, Extensions.GIF, Extensions.XLSX]}
-                  onSelect={(files) => setMedia(files[0])}
+                  onSelect={handleSelectFile}
                 />
                 <Media />
               </IconButton>

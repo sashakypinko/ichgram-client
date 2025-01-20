@@ -13,18 +13,16 @@ import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import PostMediaView from '@entities/post/components/post-media-view';
 import BackButton from '@shared/components/back-button';
+import useSnackbar from '@shared/components/snackbar/hooks/use-snackbar.hook.ts';
+import { validateFileSize } from '@shared/helpers/file-helper.ts';
 
-const StyledDialog = styled(MuiDialog)(({ theme }) => ({
+const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
     borderRadius: 12,
     background: '#fff',
     overflow: 'hidden',
   },
-
-  [theme.breakpoints.down(Breakpoint.SM)]: {
-    height: 'calc(100% - 40px)',
-  },
-}));
+});
 
 const DropZoneBox = styled(Box)(({ theme }) => ({
   borderRight: '1px solid #DBDBDB',
@@ -56,6 +54,7 @@ const PostFormDialog: FC = () => {
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
   const isSm = useIsBreakpoint(Breakpoint.SM);
+  const { errorSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (editablePost) {
@@ -72,6 +71,9 @@ const PostFormDialog: FC = () => {
             data: { content },
           },
           onSuccess: handleClose,
+          onError: () => {
+            errorSnackbar("Something went wrong. Can't edit post!");
+          },
         }),
       );
       return;
@@ -88,8 +90,19 @@ const PostFormDialog: FC = () => {
           content,
         },
         onSuccess: handleClose,
+        onError: () => {
+          errorSnackbar("Something went wrong. Can't create post!");
+        },
       }),
     );
+  };
+
+  const handleFileChange = (file: File) => {
+    if (validateFileSize(file, 20)) {
+      setFile(file);
+    } else {
+      errorSnackbar('The file size cannot be greater then 20MB.');
+    }
   };
 
   const handleClose = () => {
@@ -129,7 +142,7 @@ const PostFormDialog: FC = () => {
               <PostMediaView post={editablePost} mediaUrl={mediaUrl} />
             </>
           )}
-          {!file && !editablePost && <MediaDropZone onLoad={setFile} />}
+          {!file && !editablePost && <MediaDropZone onLoad={handleFileChange} />}
         </DropZoneBox>
         <Box>
           <Box padding={1}>

@@ -50,7 +50,7 @@ const SnackbarProvider = ({ children }: Props): ReactElement => {
       {children}
       <Snackbar
         open={open}
-        autoHideDuration={3000}
+        autoHideDuration={10000}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' } as SnackbarOrigin}
       >

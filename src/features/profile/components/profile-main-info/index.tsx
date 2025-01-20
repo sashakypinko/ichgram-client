@@ -52,7 +52,7 @@ const ProfileMainInfo: FC = () => {
 
   return (
     <MainContainer>
-      <UserAvatar user={selectedUser} size={150} />
+      <UserAvatar user={selectedUser} size={150} withoutLink />
       <InfoContainer>
         <InfoRow>
           <Typography marginRight={2} variant="h4" fontWeight={500}>

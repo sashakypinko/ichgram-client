@@ -9,6 +9,7 @@ import { RouteEnum } from '@app/routes/enums/route.enum';
 import PlainLink from '@shared/components/plain-link';
 import logo from '@assets/img/logo.svg';
 import useNotificationOverlay from '@entities/notification/hooks/use-notification-overlay.hook';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
 
 const HeaderContainer = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -39,6 +40,7 @@ const MobileHeader: FC = () => {
   const unreadNotificationsCount = useUnreadNotificationsCount();
   const unreadMessagesCount = useUnreadMessagesCount();
   const { show: showNotificationOverlay } = useNotificationOverlay();
+  const authUser = useAuthUser();
 
   if (!isSm) return null;
 
@@ -47,20 +49,22 @@ const MobileHeader: FC = () => {
       <PlainLink to={RouteEnum.MAIN}>
         <Logo src={logo} alt="logo" />
       </PlainLink>
-      <Actions>
-        <IconButton onClick={showNotificationOverlay}>
-          <Badge badgeContent={unreadNotificationsCount} color="error">
-            <Like />
-          </Badge>
-        </IconButton>
-        <PlainLink to={RouteEnum.DIRECT}>
-          <IconButton>
-            <Badge badgeContent={unreadMessagesCount} color="error">
-              <Message />
+      {authUser && (
+        <Actions>
+          <IconButton onClick={showNotificationOverlay}>
+            <Badge badgeContent={unreadNotificationsCount} color="error">
+              <Like />
             </Badge>
           </IconButton>
-        </PlainLink>
-      </Actions>
+          <PlainLink to={RouteEnum.DIRECT}>
+            <IconButton>
+              <Badge badgeContent={unreadMessagesCount} color="error">
+                <Message />
+              </Badge>
+            </IconButton>
+          </PlainLink>
+        </Actions>
+      )}
     </HeaderContainer>
   );
 };
