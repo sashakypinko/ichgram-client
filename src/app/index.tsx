@@ -39,7 +39,7 @@ const Content = styled(Box)({
 
 const App: FC = () => {
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
-  
+
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
 

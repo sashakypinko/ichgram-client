@@ -2,12 +2,13 @@ import { FC } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { styled } from '@mui/material';
-import { useAppDispatch } from '@app/hooks';
+import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { UserCredentials } from '@features/auth/types';
 import TextField from '@shared/components/formik/text-field';
 import Button from '@shared/components/button';
 import { signIn } from '@features/auth/store/slice';
 import { FormikErrors } from 'formik/dist/types';
+import { selectAuth } from '@features/auth/store/selectors.ts';
 
 const StyledForm = styled(Form)({
   width: '100%',
@@ -28,6 +29,7 @@ const initialValues: UserCredentials = {
 };
 
 const SignInForm: FC = () => {
+  const { loading } = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (
@@ -40,7 +42,6 @@ const SignInForm: FC = () => {
         onSuccess: () => {
           setSubmitting(false);
           resetForm();
-          // window.location.reload();
         },
         onError: (errors: FormikErrors<UserCredentials>) => {
           setSubmitting(false);
@@ -52,19 +53,12 @@ const SignInForm: FC = () => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>
-      {({ isSubmitting, isValid }) => {
+      {({ isValid }) => {
         return (
           <StyledForm>
             <TextField placeholder="Username or email" name="username" fullWidth />
             <TextField type="password" placeholder="Password" name="password" fullWidth />
-            <Button
-              sx={{ mt: 1 }}
-              type="submit"
-              variant="contained"
-              loading={isSubmitting}
-              disabled={!isValid}
-              fullWidth
-            >
+            <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={loading} disabled={!isValid} fullWidth>
               Log in
             </Button>
           </StyledForm>

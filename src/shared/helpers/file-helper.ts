@@ -50,3 +50,7 @@ export const downloadFile = (url: string): void => {
   anchor.click();
   document.body.removeChild(anchor);
 };
+
+export const validateFileSize = (file: File, maxSizeInMb: number): boolean => {
+  return file.size <= Math.pow(2, 20) * maxSizeInMb;
+};

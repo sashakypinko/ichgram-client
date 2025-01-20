@@ -44,7 +44,6 @@ const SignUpForm: FC = () => {
         onSuccess: () => {
           setSubmitting(false);
           resetForm();
-          window.location.reload();
         },
         onError: (errors: FormikErrors<SignUpData>) => {
           setSubmitting(false);
@@ -61,7 +60,7 @@ const SignUpForm: FC = () => {
           <TextField placeholder="Email" name="email" fullWidth />
           <TextField placeholder="Full Name" name="fullName" fullWidth />
           <TextField placeholder="Username" name="username" fullWidth />
-          <TextField placeholder="Password" name="password" fullWidth />
+          <TextField placeholder="Password" name="password" type="password" fullWidth />
           <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={isSubmitting} fullWidth>
             Sign up
           </Button>

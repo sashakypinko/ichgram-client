@@ -33,10 +33,10 @@ const Page: FC<Props> = ({ direction = 'row', onScrollBottom, paddingTop = 0, ha
   };
 
   return (
-    <StyledPage 
-      sx={{ paddingTop, height: `calc(100% - ${(hasNavbar && isSm) ? '64px' : '0px'})` }} 
-      ref={pageRef} 
-      onScroll={handleScroll} 
+    <StyledPage
+      sx={{ paddingTop, height: `calc(100% - ${hasNavbar && isSm ? '64px' : '0px'})` }}
+      ref={pageRef}
+      onScroll={handleScroll}
       flexDirection={direction}
     >
       {children}

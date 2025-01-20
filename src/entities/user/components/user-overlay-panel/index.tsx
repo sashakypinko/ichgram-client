@@ -8,6 +8,9 @@ import SearchField from '@shared/components/search-field';
 import usePaginatedSearchedUsers from '@entities/user/hooks/use-paginated-searched-users.hook';
 import { useAppDispatch } from '@app/hooks';
 import { clearSearchedUsers } from '@entities/user/store/slice';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { RouteEnum } from '@app/routes/enums/route.enum.ts';
+import { IUser } from '@entities/user/model/user.ts';
 
 const UserOverlayPanel: FC = () => {
   const [search, setSearch] = useState<string>('');
@@ -15,6 +18,12 @@ const UserOverlayPanel: FC = () => {
   const { opened, hide } = useUserOverlay();
   const { data, next } = usePaginatedSearchedUsers(search, opened);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const onUserClick = (user: IUser) => {
+    hide();
+    navigate(generatePath(RouteEnum.PROFILE, { username: user?.username || '' }));
+  };
 
   useEffect(() => {
     if (!opened) {
@@ -30,7 +39,12 @@ const UserOverlayPanel: FC = () => {
           <SearchField onSearch={setSearch} />
         </Box>
       )}
-      <UserList users={data} hoverActions={[MessageUserAction]} emptyMessage="No account found." />
+      <UserList
+        users={data}
+        hoverActions={[MessageUserAction]}
+        onClick={onUserClick}
+        emptyMessage="No account found."
+      />
     </OverlayPanel>
   );
 };

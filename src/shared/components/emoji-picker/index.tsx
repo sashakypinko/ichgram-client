@@ -36,7 +36,7 @@ const EmojiPickers: FC<Props> = ({ value, cursorPosition, onChange }) => {
 
   return (
     <Box>
-      <IconButton onClick={handleOpen}>
+      <IconButton color="inherit" onClick={handleOpen}>
         <SentimentSatisfiedOutlined fontSize="large" />
       </IconButton>
       <Popover

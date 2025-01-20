@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Box, IconButton, styled, Typography } from '@mui/material';
 import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
-import { ArrowBackIosNewRounded, DriveFileRenameOutlineRounded } from '@mui/icons-material';
+import { ArrowBackIosNewRounded, ArrowForwardIosRounded, DriveFileRenameOutlineRounded } from '@mui/icons-material';
 import { useAppDispatch } from '@app/hooks';
 import { openNewConversationDialog } from '@entities/conversation/store/slice';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
@@ -23,12 +23,14 @@ const InboxHeader: FC<Props> = ({ minified, onMinifiedChange }) => {
   const dispatch = useAppDispatch();
   const isMd = useIsBreakpoint(Breakpoint.MD);
 
+  const ArrowIcon = minified ? ArrowForwardIosRounded : ArrowBackIosNewRounded;
+
   return (
     <Header sx={{ p: minified ? 1 : 2 }}>
       <Box display="flex" alignItems="center">
         {!isMd && (
           <IconButton color="inherit" onClick={() => onMinifiedChange(!minified)}>
-            <ArrowBackIosNewRounded />
+            <ArrowIcon />
           </IconButton>
         )}
         {!minified && (
