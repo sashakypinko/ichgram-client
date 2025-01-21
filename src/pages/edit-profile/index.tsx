@@ -13,7 +13,7 @@ const EditProfilePage: FC = () => {
   const isSm = useIsBreakpoint(Breakpoint.SM);
 
   return (
-    <Page direction="column">
+    <Page>
       <Container sx={{ pt: isSm ? 10 : 4 }} maxWidth="md">
         <Box marginBottom={2} display="flex" alignItems="center" gap={2}>
           <BackButton onClick={() => navigate(RouteEnum.OWN_PROFILE)} />

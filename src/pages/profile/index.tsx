@@ -45,7 +45,7 @@ const ProfilePage: FC = () => {
   }, [createLoading, updateLoading, removeLoading]);
 
   return (
-    <Page direction="column" onScrollBottom={next}>
+    <Page onScrollBottom={next}>
       <StyledContainer maxWidth="lg">
         <ProfileMainInfo />
         <Divider />

@@ -13,8 +13,9 @@ import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import PostMediaView from '@entities/post/components/post-media-view';
 import BackButton from '@shared/components/back-button';
-import useSnackbar from '@shared/components/snackbar/hooks/use-snackbar.hook.ts';
-import { validateFileSize } from '@shared/helpers/file-helper.ts';
+import useSnackbar from '@shared/components/snackbar/hooks/use-snackbar.hook';
+import { validateFileSize } from '@shared/helpers/file-helper';
+import { useLocation } from 'react-router-dom';
 
 const StyledDialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -55,12 +56,17 @@ const PostFormDialog: FC = () => {
   const authUser = useAuthUser();
   const isSm = useIsBreakpoint(Breakpoint.SM);
   const { errorSnackbar } = useSnackbar();
+  const location = useLocation();
 
   useEffect(() => {
     if (editablePost) {
       setContent(editablePost.content);
     }
   }, [editablePost]);
+
+  useEffect(() => {
+    dispatch(closePostFormDialog());
+  }, [location]);
 
   const handleSubmit = () => {
     if (editablePost) {
@@ -146,7 +152,7 @@ const PostFormDialog: FC = () => {
         </DropZoneBox>
         <Box>
           <Box padding={1}>
-            <UserAvatar size={42} user={authUser} withUsername />
+            <UserAvatar size={42} user={authUser} withUsername withoutLink />
           </Box>
           <PostTextarea value={content} onChange={setContent} />
         </Box>

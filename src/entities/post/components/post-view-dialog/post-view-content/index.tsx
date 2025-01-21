@@ -25,7 +25,7 @@ const PostViewContent: FC<Props> = ({ post }) => {
 
   return (
     <Content>
-      <UserAvatar size={42} user={post.author} />
+      <UserAvatar size={42} user={post.author} withoutLink />
       <Box>
         <Typography sx={{ pr: 1 }} fontWeight={600} component="span">
           {post.author.username}

@@ -6,6 +6,7 @@ import EmptyChat from '@features/chat/components/empty-chat';
 import Page from '@shared/components/page';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
+import { Box } from '@mui/material';
 
 const DirectPage: FC = () => {
   const { id } = useParams();
@@ -13,13 +14,19 @@ const DirectPage: FC = () => {
   const isSm = useIsBreakpoint(Breakpoint.SM);
 
   if (isMd) {
-    return <Page paddingTop={isSm ? 9 : 0}>{id ? <Chat conversationId={id} /> : <Inbox />}</Page>;
+    return (
+      <Page paddingTop={isSm ? 9 : 0} hideFooter>
+        {id ? <Chat conversationId={id} /> : <Inbox />}
+      </Page>
+    );
   }
 
   return (
-    <Page>
-      <Inbox />
-      {id ? <Chat conversationId={id} /> : <EmptyChat />}
+    <Page hideFooter>
+      <Box display="flex" height="100%">
+        <Inbox />
+        {id ? <Chat conversationId={id} /> : <EmptyChat />}
+      </Box>
     </Page>
   );
 };

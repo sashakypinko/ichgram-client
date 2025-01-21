@@ -34,9 +34,13 @@ const Header = styled(Box)({
   padding: 16,
 });
 
-const Content = styled(Box)({
+const Content = styled(Box)(({ theme }) => ({
   padding: '0 16px',
-});
+
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    padding: 0,
+  },
+}));
 
 interface Props {
   title: string;

@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Box, IconButton, styled, TextField } from '@mui/material';
 import { SendRounded } from '@mui/icons-material';
+import { appSocket } from '@app/socket-middleware';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { sendMessage, updateMessage } from '@entities/message/store/slice';
 import { selectMessage } from '@entities/message/store/selectors';
@@ -60,6 +61,8 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
     }
 
     setText(newText);
+
+    appSocket.emit('message:typing', conversationId);
   };
 
   const submit = () => {

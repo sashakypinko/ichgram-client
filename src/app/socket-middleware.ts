@@ -9,17 +9,17 @@ import notificationSocketEvents from '@entities/notification/store/socket-events
 
 const socketEventRegisters = [conversationSocketEvents, messageSocketEvents, notificationSocketEvents];
 
-const socket = io(import.meta.env.VITE_MESSAGES_SOCKET_URL, {
+export const appSocket = io(import.meta.env.VITE_MESSAGES_SOCKET_URL, {
   path: '/core/socket.io',
   auth: { token: AuthStorage.getAccessToken() },
 });
 
 const socketMiddleware: Middleware = ({ dispatch }: MiddlewareAPI<AppDispatch>) => {
-  socket.on('connect', () => {
+  appSocket.on('connect', () => {
     console.log('Socket connected');
   });
 
-  socketEventRegisters.forEach((register) => register(socket, dispatch));
+  socketEventRegisters.forEach((register) => register(appSocket, dispatch));
 
   return (next) => (action) => next(action);
 };

@@ -75,9 +75,10 @@ const App: FC = () => {
             }}
           >
             <MainContainer sx={{ height: windowHeight }}>
-              <MobileHeader />.
+              <MobileHeader />
               <Sidebar />
               <Content>
+                {/*TODO: move to separate component*/}
                 <UserOverlayPanel />
                 <NotificationOverlayPanel />
                 <NewConversationDialog />
@@ -85,6 +86,7 @@ const App: FC = () => {
                 <FollowingDialog />
                 <PostFormDialog />
                 <PostViewDialog />
+
                 <Routes />
               </Content>
             </MainContainer>

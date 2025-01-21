@@ -9,8 +9,8 @@ import usePaginatedSearchedUsers from '@entities/user/hooks/use-paginated-search
 import { useAppDispatch } from '@app/hooks';
 import { clearSearchedUsers } from '@entities/user/store/slice';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { RouteEnum } from '@app/routes/enums/route.enum.ts';
-import { IUser } from '@entities/user/model/user.ts';
+import { RouteEnum } from '@app/routes/enums/route.enum';
+import { IUser } from '@entities/user/model/user';
 
 const UserOverlayPanel: FC = () => {
   const [search, setSearch] = useState<string>('');

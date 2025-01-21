@@ -9,7 +9,7 @@ import { RouteEnum } from '@app/routes/enums/route.enum';
 import PlainLink from '@shared/components/plain-link';
 import logo from '@assets/img/logo.svg';
 import useNotificationOverlay from '@entities/notification/hooks/use-notification-overlay.hook';
-import useAuthUser from '@features/auth/hooks/use-auth-user.hook.ts';
+import useAuthUser from '@features/auth/hooks/use-auth-user.hook';
 
 const HeaderContainer = styled(Box)(({ theme }) => ({
   width: '100%',

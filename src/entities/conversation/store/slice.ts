@@ -4,9 +4,11 @@ import { IConversation } from '@entities/conversation/model/conversation';
 import { ConversationApi } from '@entities/conversation/services/conversation-service';
 import { CreateConversationData } from '@entities/conversation/types';
 import { ActionWithCallbacks } from '@app/store';
+import { IUser } from '@entities/user/model/user';
 
 const initialState: ConversationState = {
   conversations: [],
+  typingUsers: {},
   currentConversation: null,
   newConversationDialogOpened: false,
   loading: false,
@@ -78,6 +80,23 @@ const slice = createSlice({
     closeNewConversationDialog: (state: ConversationState) => {
       state.newConversationDialogOpened = false;
     },
+    addTypingUser: (state: ConversationState, action: PayloadAction<{ conversationId: string; user: IUser }>) => {
+      if (!state.typingUsers[action.payload.conversationId]) {
+        state.typingUsers[action.payload.conversationId] = [action.payload.user];
+        return;
+      }
+
+      if (!state.typingUsers[action.payload.conversationId].find(({ _id }) => action.payload.user._id === _id)) {
+        state.typingUsers[action.payload.conversationId].push(action.payload.user);
+      }
+    },
+    removeTypingUser: (state: ConversationState, action: PayloadAction<{ conversationId: string; user: IUser }>) => {
+      if (state.typingUsers[action.payload.conversationId]) {
+        state.typingUsers[action.payload.conversationId] = state.typingUsers[action.payload.conversationId].filter(
+          ({ _id }) => _id !== action.payload.user._id,
+        );
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -137,5 +156,11 @@ const slice = createSlice({
   },
 });
 
-export const { setCurrentConversation, openNewConversationDialog, closeNewConversationDialog } = slice.actions;
+export const {
+  setCurrentConversation,
+  openNewConversationDialog,
+  closeNewConversationDialog,
+  addTypingUser,
+  removeTypingUser,
+} = slice.actions;
 export default slice.reducer;

@@ -18,6 +18,7 @@ const AvatarContainer = styled(Box)({
 const StyledAvatar = styled('img')({
   borderRadius: '50%',
   border: '1px solid rgba(0, 0, 0, 0.10)',
+  objectFit: 'cover',
 });
 
 interface Props {

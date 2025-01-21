@@ -8,7 +8,7 @@ import TextField from '@shared/components/formik/text-field';
 import Button from '@shared/components/button';
 import { signIn } from '@features/auth/store/slice';
 import { FormikErrors } from 'formik/dist/types';
-import { selectAuth } from '@features/auth/store/selectors.ts';
+import { selectAuth } from '@features/auth/store/selectors';
 
 const StyledForm = styled(Form)({
   width: '100%',
