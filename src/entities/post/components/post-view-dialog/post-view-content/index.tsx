@@ -7,16 +7,12 @@ import Breakpoint from '@shared/enums/breakpoint.enum';
 import { shortenString } from '@shared/helpers/string-helper';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 
-const Content = styled(Box)(({ theme }) => ({
+const Content = styled(Box)({
   display: 'flex',
   alignItems: 'start',
   paddingBottom: 16,
   gap: 24,
-
-  [theme.breakpoints.down(Breakpoint.SM)]: {
-    paddingBottom: 0,
-  },
-}));
+});
 
 interface Props {
   post: IPost;
@@ -26,18 +22,16 @@ const PostViewContent: FC<Props> = ({ post }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const theme = useTheme();
   const isSm = useIsBreakpoint(Breakpoint.SM);
-  
+
   return (
     <Content>
-      <UserAvatar size={42} user={post.author} />
+      <UserAvatar size={42} user={post.author} withoutLink />
       <Box>
         <Typography sx={{ pr: 1 }} fontWeight={600} component="span">
           {post.author.username}
         </Typography>
-        <Typography component="span">
-          {showMore || !isSm ? post.content : shortenString(post.content, 56)}
-        </Typography>
-        {post.content.length > 56 && isSm &&  (
+        <Typography component="span">{showMore || !isSm ? post.content : shortenString(post.content, 56)}</Typography>
+        {post.content.length > 56 && isSm && (
           <Typography
             component="span"
             sx={{ cursor: 'pointer' }}

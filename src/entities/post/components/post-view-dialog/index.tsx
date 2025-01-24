@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Box, Dialog as MuiDialog, styled } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { selectPost } from '@entities/post/store/selectors';
@@ -16,6 +16,7 @@ import PostDate from '@entities/post/components/post-date';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
 import PostMediaView from '@entities/post/components/post-media-view';
+import { useLocation } from 'react-router-dom';
 
 const StyledDialog = styled(MuiDialog)(({ theme }) => ({
   '& .MuiPaper-root': {
@@ -69,6 +70,11 @@ const PostViewDialog: FC = () => {
   const { data, next, reset } = usePaginatedComments(selectedPost?._id);
   const mainContainerRef = useRef<HTMLDivElement>();
   const isSm = useIsBreakpoint(Breakpoint.SM);
+  const location = useLocation();
+
+  useEffect(() => {
+    dispatch(closePostViewDialog());
+  }, [location]);
 
   const handleClose = () => {
     dispatch(closePostViewDialog());
@@ -103,18 +109,10 @@ const PostViewDialog: FC = () => {
     <StyledDialog maxWidth="xl" open={postViewDialogOpened} onClose={handleClose} fullWidth>
       {isSm && <PostViewHeader post={selectedPost} onBackClick={handleBackClick} />}
       <StyledContainer>
-        <Box width="100%">
-          {!commentMode && (
-            <PostMediaView post={selectedPost} />
-          )}
-        </Box>
+        <Box width="100%">{!commentMode && <PostMediaView post={selectedPost} />}</Box>
         <Box display="flex" flexDirection="column" width="100%">
           {!isSm && <PostViewHeader post={selectedPost} />}
-          <MainContent
-            sx={{ maxHeight: commentMode ? '50vh' : '20vh' }}
-            ref={mainContainerRef}
-            onScroll={handleScroll}
-          >
+          <MainContent sx={{ maxHeight: commentMode ? '50vh' : '20vh' }} ref={mainContainerRef} onScroll={handleScroll}>
             <PostViewContent post={selectedPost} />
             {(!isSm || commentMode) && (
               <>

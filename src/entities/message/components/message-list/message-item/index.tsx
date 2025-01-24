@@ -54,16 +54,12 @@ const MessageItem: FC<Props> = ({ message, isNewest, forwardRef, onRepliedMessag
   const authUser = useAuthUser();
   const dispatch = useAppDispatch();
 
-  const markAsRead = () => {
-    setMarkingAsRead(true);
-    dispatch(markMessageAsRead(message._id));
-  };
-
   useEffect(() => {
     if (!markingAsRead && authUser && isInView && !message.readBy.includes(authUser._id)) {
-      markAsRead();
+      setMarkingAsRead(true);
+      dispatch(markMessageAsRead(message._id));
     }
-  }, [isInView, message, markAsRead, authUser, markingAsRead]);
+  }, [isInView, message, authUser, markingAsRead]);
 
   const handleDelete = () => {
     dispatch(deleteMessage(message));
@@ -93,7 +89,7 @@ const MessageItem: FC<Props> = ({ message, isNewest, forwardRef, onRepliedMessag
             onClick={() => onRepliedMessageClick(message.repliedMessage?._id || '')}
           />
         )}
-        {message.mediaId && <MediaView mediaId={message.mediaId} />}
+        {message.mediaId && <MediaView sx={{ width: 250, borderRadius: 4 }} mediaId={message.mediaId} />}
         {message.content && <Content textAlign={isOwn ? 'end' : 'start'}>{message.content}</Content>}
         {isOwn && isNewest && viewed && <ViewedLabel variant="caption">Viewed</ViewedLabel>}
       </MessageBlock>

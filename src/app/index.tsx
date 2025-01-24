@@ -1,5 +1,5 @@
-import { FC, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
+import { FC, useEffect, useState } from 'react';
+import { Box, CssBaseline, styled, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import theme from './configs/theme';
 import Routes from './routes/routes';
@@ -26,7 +26,20 @@ import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import './index.css';
 
+const MainContainer = styled(Box)({
+  display: 'flex',
+  overflowY: 'hidden',
+});
+
+const Content = styled(Box)({
+  width: '100%',
+  position: 'relative',
+  flexGrow: 1,
+});
+
 const App: FC = () => {
+  const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
+
   const dispatch = useAppDispatch();
   const authUser = useAuthUser();
 
@@ -42,16 +55,30 @@ const App: FC = () => {
     }
   }, [authUser]);
 
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setWindowHeight(window.innerHeight);
+    });
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary>
         <SnackbarProvider>
           <CssBaseline />
-          <Router>
-            <Box sx={{ display: 'flex', height: '100vh', overflowY: 'hidden' }}>
-              <MobileHeader />.
+          <Router
+            // Enabling future flags for React Router v7 to adopt upcoming behavior
+            // @ts-ignore
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <MainContainer sx={{ height: windowHeight }}>
+              <MobileHeader />
               <Sidebar />
-              <Box width="100%" position="relative" flexGrow={1}>
+              <Content>
+                {/*TODO: move to separate component*/}
                 <UserOverlayPanel />
                 <NotificationOverlayPanel />
                 <NewConversationDialog />
@@ -59,9 +86,10 @@ const App: FC = () => {
                 <FollowingDialog />
                 <PostFormDialog />
                 <PostViewDialog />
+
                 <Routes />
-              </Box>
-            </Box>
+              </Content>
+            </MainContainer>
           </Router>
         </SnackbarProvider>
       </ErrorBoundary>

@@ -8,7 +8,7 @@ const UserListContainer = styled(List)({
   display: 'flex',
   flexDirection: 'column',
   gap: 8,
-  overflowY: 'auto'
+  overflowY: 'auto',
 });
 
 interface Props {
@@ -16,15 +16,14 @@ interface Props {
   onClick?: (user: IUser) => void;
   actions?: UserAction[];
   hoverActions?: UserAction[];
-  minHeight?: number;
   emptyMessage?: string;
 }
 
-const UserList: FC<Props> = ({ users, onClick, actions, hoverActions, minHeight, emptyMessage }) => {
+const UserList: FC<Props> = ({ users, onClick, actions, hoverActions, emptyMessage }) => {
   const theme = useTheme();
 
   return (
-    <UserListContainer sx={{ minHeight }}>
+    <UserListContainer>
       {!users.length && emptyMessage && (
         <Typography sx={{ p: 2 }} color={theme.palette.text.secondary}>
           {emptyMessage}

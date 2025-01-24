@@ -78,21 +78,22 @@ const NewConversationDialog: FC = () => {
         <UserMultiSearch selected={selectedUsers} onChange={setSelectedUsers} />
       </Box>
       <Divider />
-      <UserList
-        users={users.data}
-        onClick={handleSelectChange}
-        minHeight={600}
-        emptyMessage="No account found."
-        actions={[
-          ({ user }) => {
-            const isSelected = !!selectedUsers.find((selectedUser) => user._id === selectedUser._id);
-            const Icon = isSelected ? CheckCircleRounded : RadioButtonUnchecked;
-            const color = isSelected ? 'primary' : 'inherit';
+      <Box minHeight={300}>
+        <UserList
+          users={users.data}
+          onClick={handleSelectChange}
+          emptyMessage="No account found."
+          actions={[
+            ({ user }) => {
+              const isSelected = !!selectedUsers.find((selectedUser) => user._id === selectedUser._id);
+              const Icon = isSelected ? CheckCircleRounded : RadioButtonUnchecked;
+              const color = isSelected ? 'primary' : 'inherit';
 
-            return <Icon color={color} fontSize="large" />;
-          },
-        ]}
-      />
+              return <Icon color={color} fontSize="large" />;
+            },
+          ]}
+        />
+      </Box>
       <ActionContainer>
         {selectedUsers.length > 1 && <Input onChange={handleTitleChange} placeholder="Chat title" fullWidth />}
         <Button

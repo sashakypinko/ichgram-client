@@ -9,18 +9,21 @@ import ManageChatMenu from '@features/chat/components/manage-chat-menu';
 import BackButton from '@shared/components/back-button';
 import useIsBreakpoint from '@shared/hooks/use-is-breakpoint.hook';
 import Breakpoint from '@shared/enums/breakpoint.enum';
-import { setCurrentConversation } from '@entities/conversation/store/slice.ts';
+import { setCurrentConversation } from '@entities/conversation/store/slice';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { RouteEnum } from '@app/routes/enums/route.enum.ts';
+import { RouteEnum } from '@app/routes/enums/route.enum';
 
 const Container = styled(Box)(({ theme }) => ({
   borderBottom: '1px solid',
   borderColor: theme.palette.text.disabled,
-  minHeight: 80,
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: 16,
+
+  [theme.breakpoints.down(Breakpoint.SM)]: {
+    padding: '0 8px',
+  },
 }));
 
 const ChatHeader: FC = () => {
@@ -29,11 +32,11 @@ const ChatHeader: FC = () => {
   const isMd = useIsBreakpoint(Breakpoint.MD);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const handleBackClick = () => {
-    dispatch(setCurrentConversation(null))
+    dispatch(setCurrentConversation(null));
     navigate(generatePath(RouteEnum.DIRECT));
-  }
+  };
 
   if (!currentConversation) {
     return null;

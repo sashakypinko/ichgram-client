@@ -37,7 +37,7 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
     width: '100%',
     padding: 0,
     borderTop: `1px solid ${theme.palette.text.disabled}`,
-    zIndex: 9999,
+    zIndex: 10,
   },
 }));
 

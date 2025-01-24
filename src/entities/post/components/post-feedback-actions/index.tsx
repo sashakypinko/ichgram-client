@@ -27,7 +27,7 @@ const PostFeedbackActions: FC<Props> = ({ post, onCommentClick }) => {
   const LikeIcon = liked ? FavoriteRounded : FavoriteBorderRounded;
 
   return (
-    <Box {...( isSm && { display: 'flex', alignItems: 'center' })}>
+    <Box {...(isSm && { display: 'flex', alignItems: 'center' })}>
       <Box display="flex" alignItems="center">
         <IconButton color="inherit" onClick={toggleLike}>
           <LikeIcon color={liked ? 'error' : 'inherit'} fontSize="large" />

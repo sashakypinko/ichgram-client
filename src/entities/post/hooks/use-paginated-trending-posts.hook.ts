@@ -13,7 +13,7 @@ const useTrendingPostsPagination = (): DataWithPaginationControl<IPost> => {
     dispatch(getTrendingPosts(params));
   };
 
-  return usePagination<IPost>(trendingPosts, fetchData);
+  return usePagination<IPost>(trendingPosts, fetchData, [], true);
 };
 
 export default useTrendingPostsPagination;

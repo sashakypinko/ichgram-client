@@ -1,7 +1,7 @@
-import type { ChangeEvent, ReactElement } from 'react';
+import type { ChangeEvent, FC } from 'react';
 import { Box, styled, TextField as MuiTextField, Typography } from '@mui/material';
 import { useField } from 'formik';
-import { BaseTextFieldProps } from '@mui/material/TextField/TextField';
+import { StandardTextFieldProps } from '@mui/material/TextField/TextField';
 
 const StyledTextField = styled(MuiTextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
@@ -29,12 +29,12 @@ const SymbolCount = styled(Typography)({
   bottom: 6,
 });
 
-interface Props extends BaseTextFieldProps {
+interface Props extends StandardTextFieldProps {
   name: string;
   maxLength?: number;
 }
 
-const TextField = ({ name, maxLength, ...props }: Props): ReactElement => {
+const TextField: FC<Props> = ({ name, maxLength, ...props }) => {
   const [field, meta] = useField<string>(name);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

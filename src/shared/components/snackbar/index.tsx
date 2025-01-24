@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import SnackbarContext from './context/snackbar.context';
 import { Alert, Snackbar, SnackbarOrigin } from '@mui/material';
 import { AlertColor } from '@mui/material/Alert/Alert';
@@ -7,7 +7,7 @@ interface Props {
   children: ReactNode;
 }
 
-const SnackbarProvider = ({ children }: Props): ReactElement => {
+const SnackbarProvider: FC<Props> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState<AlertColor>('info');
@@ -50,7 +50,7 @@ const SnackbarProvider = ({ children }: Props): ReactElement => {
       {children}
       <Snackbar
         open={open}
-        autoHideDuration={3000}
+        autoHideDuration={10000}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' } as SnackbarOrigin}
       >

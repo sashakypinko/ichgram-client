@@ -11,4 +11,5 @@ export interface IUser {
   about: string;
   followings: string[];
   followersCount?: number;
+  postsCount?: number;
 }

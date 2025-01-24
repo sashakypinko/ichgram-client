@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
-import { List } from '@mui/material';
+import { List, Typography, useTheme } from '@mui/material';
 import { selectConversation } from '@entities/conversation/store/selectors';
 import { IConversation } from '@entities/conversation/model/conversation';
 import ConversationItem from '@entities/conversation/components/conversation-list/conversation-item';
@@ -10,12 +10,14 @@ import { RouteEnum } from '@app/routes/enums/route.enum';
 
 interface Props {
   minified?: boolean;
+  emptyMessage?: string;
 }
 
-const ConversationList: FC<Props> = ({ minified }) => {
+const ConversationList: FC<Props> = ({ minified, emptyMessage }) => {
   const { conversations, currentConversation } = useAppSelector(selectConversation);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleSelectChat = (conversation: IConversation) => {
     dispatch(setEditingMessage(null));
@@ -25,6 +27,11 @@ const ConversationList: FC<Props> = ({ minified }) => {
 
   return (
     <List>
+      {!conversations.length && emptyMessage && (
+        <Typography sx={{ p: 2 }} textAlign="center" color={theme.palette.text.secondary}>
+          {emptyMessage}
+        </Typography>
+      )}
       {conversations.map((conversation: IConversation) => (
         <ConversationItem
           key={conversation._id}

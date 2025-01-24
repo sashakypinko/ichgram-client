@@ -120,7 +120,7 @@ const ProfileForm: FC = () => {
               Change photo
               <VisuallyHiddenInput
                 type="file"
-                accept={'.png,.jpg'}
+                accept=".png,.jpg,.jpeg"
                 onChange={(e) => setFieldValue('avatar', (e.target.files || [])[0])}
                 hidden
                 multiple

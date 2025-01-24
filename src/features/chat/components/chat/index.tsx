@@ -13,6 +13,7 @@ import useCorrespondent from '@entities/conversation/hooks/use-correspondent.hoo
 import EmptyChat from '@features/chat/components/empty-chat';
 import ChatHeader from '@features/chat/components/chat-header';
 import { setCurrentConversation } from '@entities/conversation/store/slice';
+import TypingUsersBox from '@entities/conversation/components/typing-users-box';
 
 const ChatContainer = styled(Box)({
   width: '100%',
@@ -22,7 +23,7 @@ const ChatContainer = styled(Box)({
 });
 
 const InputWrapper = styled(Box)({
-  padding: 16,
+  padding: '0 16px 16px',
 });
 
 const MessageListContainer = styled(Box)({
@@ -120,6 +121,7 @@ const Chat: FC<Props> = ({ conversationId }) => {
           />
         )}
       </Box>
+      <TypingUsersBox />
       <InputWrapper>
         <MessageInput conversationId={currentConversation._id} onSent={scrollBottom} />
       </InputWrapper>

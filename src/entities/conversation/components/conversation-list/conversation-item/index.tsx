@@ -28,15 +28,19 @@ const ConversationItem: FC<Props> = ({ conversation, isActive, onSelect, minifie
           <Content title={conversation.title || correspondent?.fullName || ''} lastMessage={conversation.lastMessage} />
         )}
         {conversation.hasUnread && (
-          <Badge 
-            sx={minified ? {
-              position: 'absolute',
-              right: 16,
-              top: 16,
-            } : {}}
+          <Badge
+            sx={
+              minified
+                ? {
+                    position: 'absolute',
+                    right: 16,
+                    top: 16,
+                  }
+                : {}
+            }
             color="primary"
             variant="dot"
-            badgeContent=" " 
+            badgeContent=" "
           />
         )}
       </ListItemButton>
