@@ -5,6 +5,7 @@ import { styled } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { UserCredentials } from '@features/auth/types';
 import TextField from '@shared/components/formik/text-field';
+import PasswordField from '@shared/components/formik/password-field';
 import Button from '@shared/components/button';
 import { signIn } from '@features/auth/store/slice';
 import { FormikErrors } from 'formik/dist/types';
@@ -57,7 +58,7 @@ const SignInForm: FC = () => {
         return (
           <StyledForm>
             <TextField placeholder="Username or email" name="username" fullWidth />
-            <TextField type="password" placeholder="Password" name="password" fullWidth />
+            <PasswordField placeholder="Password" name="password" fullWidth />
             <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={loading} disabled={!isValid} fullWidth>
               Log in
             </Button>

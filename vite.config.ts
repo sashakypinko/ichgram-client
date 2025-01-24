@@ -20,8 +20,8 @@ export default defineConfig({
     },
   },
   server: {
-    host: process.env.VITE_HOST || 'localhost',
+    host: process.env.DOCKER_MODE ? true : process.env.VITE_HOST || 'localhost',
     port: process.env.VITE_PORT ? parseInt(process.env.VITE_PORT) : 3000,
-    open: true,
+    open: !process.env.DOCKER_MODE,
   },
 })

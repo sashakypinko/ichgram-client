@@ -8,6 +8,7 @@ import { signUp } from '@features/auth/store/slice';
 import TextField from '@shared/components/formik/text-field';
 import Button from '@shared/components/button';
 import { FormikErrors } from 'formik/dist/types';
+import PasswordField from '@shared/components/formik/password-field';
 
 const StyledForm = styled(Form)({
   width: '100%',
@@ -18,10 +19,17 @@ const StyledForm = styled(Form)({
 
 const validationSchema = () =>
   Yup.object().shape({
-    email: Yup.string().required('Email address is required'),
-    username: Yup.string().required('Username is required'),
-    fullName: Yup.string().required('Full Name is required'),
-    password: Yup.string().required('Password is required'),
+    email: Yup.string().email('Invalid email format').required('Email address is required'),
+    username: Yup.string().min(5, 'Username must be at least 5 characters').required('Username is required'),
+    fullName: Yup.string().min(5, 'Full Name must be at least 5 characters').required('Full Name is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/(?=(.*[A-Z]){2})/, 'Password must contain at least 2 uppercase letters.')
+      .matches(/(?=(.*[a-z]){2})/, 'Password must contain at least 2 lowercase letters.')
+      .matches(/(?=(.*\d){1})/, 'Password must contain at least 1 number.')
+      .matches(/(?=.*[@$!%*?&])/, 'Password must contain at least 1 special character (@, $, !, %, *, ?, &).')
+      .matches(/^[\w@$!%*?&]+$/, 'Password can only contain letters, numbers, and @$!%*?& symbols.')
   });
 
 const initialValues: SignUpData = {
@@ -60,7 +68,7 @@ const SignUpForm: FC = () => {
           <TextField placeholder="Email" name="email" fullWidth />
           <TextField placeholder="Full Name" name="fullName" fullWidth />
           <TextField placeholder="Username" name="username" fullWidth />
-          <TextField placeholder="Password" name="password" type="password" fullWidth />
+          <PasswordField placeholder="Password" name="password" fullWidth />
           <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={isSubmitting} fullWidth>
             Sign up
           </Button>
