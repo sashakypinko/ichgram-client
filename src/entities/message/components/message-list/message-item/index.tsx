@@ -34,7 +34,7 @@ const ViewedLabel = styled(Typography)({
 });
 
 const Content = styled(Typography)({
-  wordBreak: 'break-all',
+  wordBreak: 'break-word',
   padding: '6px 12px',
   fontWeight: 500,
 });

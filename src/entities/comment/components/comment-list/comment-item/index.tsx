@@ -18,7 +18,7 @@ const StyledItem = styled(Box)({
 
 const CommentText = styled(Typography)({
   paddingLeft: 8,
-  wordBreak: 'break-all',
+  wordBreak: 'break-word',
   display: 'inline',
 });
 

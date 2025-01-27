@@ -1,6 +1,6 @@
 import ApiService from '../../../app/services/api-service';
 import { IUser } from '@entities/user/model/user';
-import { AuthData, ResetPasswordData, SignUpData, UserCredentials } from '../types';
+import { AuthData, ResetPasswordData, SendResetPasswordLinkData, SignUpData, UserCredentials } from '../types';
 
 class AuthService extends ApiService {
   getUser = async (): Promise<IUser> => {
@@ -20,6 +20,11 @@ class AuthService extends ApiService {
 
   logout = async (): Promise<void> => {
     await this.post('logout').then((res) => res.data);
+  };
+
+  sendResetPasswordLink = async (data: SendResetPasswordLinkData): Promise<void> => {
+    const res = await this.post('send-reset-password-link', data).then((res) => res.data);
+    return res.data;
   };
 
   resetPassword = async (data: ResetPasswordData): Promise<void> => {

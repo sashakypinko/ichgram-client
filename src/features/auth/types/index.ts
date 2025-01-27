@@ -8,9 +8,17 @@ export interface UserCredentials {
 export interface SignUpData extends UserCredentials {
   fullName: string;
   email: string;
+  confirmPassword: string;
 }
 
-export interface ResetPasswordData extends Omit<UserCredentials, 'password'> {}
+export interface SendResetPasswordLinkData {
+  username: string;
+}
+
+export interface ResetPasswordData extends Omit<UserCredentials, 'username'> {
+  token: string;
+  confirmPassword: string;
+}
 
 export interface AuthData {
   accessToken: string;
