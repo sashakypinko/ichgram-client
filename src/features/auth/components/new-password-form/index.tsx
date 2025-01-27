@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch } from '@app/hooks';
+import { useAppDispatch, useAppSelector } from '@app/hooks';
 import { styled } from '@mui/material';
 import { ResetPasswordData } from '@features/auth/types';
 import { resetPassword } from '@features/auth/store/slice';
@@ -10,6 +10,7 @@ import { FormikErrors } from 'formik/dist/types';
 import { useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@app/routes/enums/route.enum';
 import PasswordField from '@shared/components/formik/password-field';
+import { selectAuth } from '@features/auth/store/selectors.ts';
 
 const StyledForm = styled(Form)({
   width: '100%',
@@ -40,6 +41,7 @@ interface Props {
 const NewPasswordForm: FC<Props> = ({ token }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { resetPasswordLoading } = useAppSelector(selectAuth);
 
   const initialValues: ResetPasswordData = {
     token,
@@ -49,18 +51,16 @@ const NewPasswordForm: FC<Props> = ({ token }) => {
 
   const handleSubmit = async (
     values: ResetPasswordData,
-    { resetForm, setSubmitting, setErrors }: FormikHelpers<ResetPasswordData>,
+    { resetForm, setErrors }: FormikHelpers<ResetPasswordData>,
   ) => {
     dispatch(
       resetPassword({
         payload: values,
         onSuccess: () => {
-          setSubmitting(false);
           resetForm();
           navigate(RouteEnum.SIGN_IN);
         },
         onError: (errors: FormikErrors<ResetPasswordData>) => {
-          setSubmitting(false);
           setErrors(errors);
         },
       }),
@@ -69,15 +69,13 @@ const NewPasswordForm: FC<Props> = ({ token }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>
-      {({ isSubmitting }) => (
-        <StyledForm>
-          <PasswordField placeholder="Password" name="password" fullWidth />
-          <PasswordField placeholder="Conform Password" name="confirmPassword" fullWidth />
-          <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={isSubmitting} fullWidth>
-            Change password
-          </Button>
-        </StyledForm>
-      )}
+      <StyledForm>
+        <PasswordField placeholder="Password" name="password" fullWidth />
+        <PasswordField placeholder="Conform Password" name="confirmPassword" fullWidth />
+        <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={resetPasswordLoading} fullWidth>
+          Change password
+        </Button>
+      </StyledForm>
     </Formik>
   );
 };
