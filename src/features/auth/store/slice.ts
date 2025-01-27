@@ -11,6 +11,8 @@ import { AxiosError } from 'axios';
 const initialState: AuthState = {
   user: null,
   loading: false,
+  sendLinkLoading: false,
+  resetPasswordLoading: false,
   error: null,
 };
 
@@ -176,28 +178,28 @@ const slice = createSlice({
       })
 
       .addCase(sendResetPasswordLink.pending, (state: AuthState) => {
-        state.loading = true;
+        state.sendLinkLoading = true;
         state.error = null;
       })
       .addCase(sendResetPasswordLink.fulfilled, (state: AuthState) => {
-        state.loading = false;
+        state.sendLinkLoading = false;
         state.error = null;
       })
       .addCase(sendResetPasswordLink.rejected, (state: AuthState, action: PayloadAction<unknown>) => {
-        state.loading = false;
+        state.sendLinkLoading = false;
         state.error = action.payload as string;
       })
 
       .addCase(resetPassword.pending, (state: AuthState) => {
-        state.loading = true;
+        state.resetPasswordLoading = true;
         state.error = null;
       })
       .addCase(resetPassword.fulfilled, (state: AuthState) => {
-        state.loading = false;
+        state.resetPasswordLoading = false;
         state.error = null;
       })
       .addCase(resetPassword.rejected, (state: AuthState, action: PayloadAction<unknown>) => {
-        state.loading = false;
+        state.resetPasswordLoading = false;
         state.error = action.payload as string;
       });
   },
