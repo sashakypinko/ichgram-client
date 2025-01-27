@@ -73,7 +73,7 @@ const SignUpForm: FC = () => {
           <TextField placeholder="Full Name" name="fullName" fullWidth />
           <TextField placeholder="Username" name="username" fullWidth />
           <PasswordField placeholder="Password" name="password" fullWidth />
-          <PasswordField placeholder="Conform Password" name="confirmPassword" fullWidth />
+          <PasswordField placeholder="Confirm Password" name="confirmPassword" fullWidth />
           <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={isSubmitting} fullWidth>
             Sign up
           </Button>

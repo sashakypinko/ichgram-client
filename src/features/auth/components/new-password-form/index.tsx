@@ -71,7 +71,7 @@ const NewPasswordForm: FC<Props> = ({ token }) => {
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>
       <StyledForm>
         <PasswordField placeholder="Password" name="password" fullWidth />
-        <PasswordField placeholder="Conform Password" name="confirmPassword" fullWidth />
+        <PasswordField placeholder="Confirm Password" name="confirmPassword" fullWidth />
         <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={resetPasswordLoading} fullWidth>
           Change password
         </Button>
