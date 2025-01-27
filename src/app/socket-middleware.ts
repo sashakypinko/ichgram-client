@@ -1,5 +1,5 @@
 import { Middleware } from 'redux';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { AuthStorage } from '@features/auth/services/auth-storage';
 import { AppDispatch } from '@app/store';
 import { MiddlewareAPI } from '@reduxjs/toolkit';
@@ -9,19 +9,35 @@ import notificationSocketEvents from '@entities/notification/store/socket-events
 
 const socketEventRegisters = [conversationSocketEvents, messageSocketEvents, notificationSocketEvents];
 
-export const appSocket = io(import.meta.env.VITE_MESSAGES_SOCKET_URL, {
-  path: '/core/socket.io',
-  auth: { token: AuthStorage.getAccessToken() },
-});
+export let appSocket: Socket | null = null;
 
-const socketMiddleware: Middleware = ({ dispatch }: MiddlewareAPI<AppDispatch>) => {
-  appSocket.on('connect', () => {
-    console.log('Socket connected');
+const createSocket = (): Socket => {
+  return io(import.meta.env.VITE_MESSAGES_SOCKET_URL, {
+    path: '/core/socket.io',
+    auth: { token: AuthStorage.getAccessToken() },
   });
+};
 
-  socketEventRegisters.forEach((register) => register(appSocket, dispatch));
+const socketMiddleware: Middleware = ({ dispatch, getState }: MiddlewareAPI<AppDispatch>) => {
+  return (next) => (action) => {
+    const result = next(action);
 
-  return (next) => (action) => next(action);
+    const authUser = getState().auth.user;
+
+    if (!appSocket && authUser) {
+      appSocket = createSocket();
+
+      appSocket.on('connect', () => {
+        console.log('Socket connected');
+      });
+
+      for (const register of socketEventRegisters) {
+        register(appSocket, dispatch);
+      }
+    }
+
+    return result;
+  };
 };
 
 export default socketMiddleware;

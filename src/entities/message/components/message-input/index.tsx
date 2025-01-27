@@ -62,7 +62,9 @@ const MessageInput: FC<Props> = ({ conversationId, onSent }) => {
 
     setText(newText);
 
-    appSocket.emit('message:typing', conversationId);
+    if (appSocket) {
+      appSocket.emit('message:typing', conversationId);
+    }
   };
 
   const submit = () => {

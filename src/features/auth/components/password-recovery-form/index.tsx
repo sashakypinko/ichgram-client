@@ -1,15 +1,13 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch } from '@app/hooks';
-import { styled } from '@mui/material';
-import { ResetPasswordData } from '@features/auth/types';
-import { resetPassword } from '@features/auth/store/slice';
+import { styled, Typography, useTheme } from '@mui/material';
+import { SendResetPasswordLinkData } from '@features/auth/types';
+import { sendResetPasswordLink } from '@features/auth/store/slice';
 import TextField from '@shared/components/formik/text-field';
 import Button from '@shared/components/button';
 import { FormikErrors } from 'formik/dist/types';
-import { useNavigate } from 'react-router-dom';
-import { RouteEnum } from '@app/routes/enums/route.enum';
 
 const StyledForm = styled(Form)({
   width: '100%',
@@ -23,33 +21,43 @@ const validationSchema = () =>
     username: Yup.string().required('Username is required'),
   });
 
-const initialValues: ResetPasswordData = {
+const initialValues: SendResetPasswordLinkData = {
   username: '',
 };
 
 const PasswordRecoveryForm: FC = () => {
+  const [sent, setSent] = useState<boolean>(false);
+
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleSubmit = async (
-    values: ResetPasswordData,
-    { resetForm, setSubmitting, setErrors }: FormikHelpers<ResetPasswordData>,
+    values: SendResetPasswordLinkData,
+    { resetForm, setSubmitting, setErrors }: FormikHelpers<SendResetPasswordLinkData>,
   ) => {
     dispatch(
-      resetPassword({
+      sendResetPasswordLink({
         payload: values,
         onSuccess: () => {
           setSubmitting(false);
           resetForm();
-          navigate(RouteEnum.SIGN_IN);
+          setSent(true);
         },
-        onError: (errors: FormikErrors<ResetPasswordData>) => {
+        onError: (errors: FormikErrors<SendResetPasswordLinkData>) => {
           setSubmitting(false);
           setErrors(errors);
         },
       }),
     );
   };
+  
+  if (sent) {
+    return (
+      <Typography variant="h5" textAlign="center" color={theme.palette.success.main}>
+        Please check your email inbox
+      </Typography>
+    )
+  }
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>

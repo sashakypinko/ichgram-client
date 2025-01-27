@@ -13,6 +13,7 @@ import ExplorePage from '@pages/explore';
 import DirectPage from '@pages/direct';
 import EditProfilePage from '@pages/edit-profile';
 import PasswordRecoveryPage from '@pages/password-recovery';
+import ResetPasswordPage from '@pages/reset-password';
 
 const DEFAULT_REDIRECT: string = RouteEnum.SIGN_IN;
 
@@ -32,6 +33,12 @@ const routes: RouteInterface[] = [
   {
     path: RouteEnum.PASSWORD_RECOVERY,
     Component: PasswordRecoveryPage,
+    unauthorizedOnly: true,
+    redirectTo: RouteEnum.MAIN,
+  },
+  {
+    path: RouteEnum.RESET_PASSWORD,
+    Component: ResetPasswordPage,
     unauthorizedOnly: true,
     redirectTo: RouteEnum.MAIN,
   },

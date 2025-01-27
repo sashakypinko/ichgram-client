@@ -3,11 +3,12 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch } from '@app/hooks';
 import { styled } from '@mui/material';
-import { SignUpData } from '@features/auth/types';
-import { signUp } from '@features/auth/store/slice';
-import TextField from '@shared/components/formik/text-field';
+import { ResetPasswordData } from '@features/auth/types';
+import { resetPassword } from '@features/auth/store/slice';
 import Button from '@shared/components/button';
 import { FormikErrors } from 'formik/dist/types';
+import { useNavigate } from 'react-router-dom';
+import { RouteEnum } from '@app/routes/enums/route.enum';
 import PasswordField from '@shared/components/formik/password-field';
 
 const StyledForm = styled(Form)({
@@ -19,9 +20,6 @@ const StyledForm = styled(Form)({
 
 const validationSchema = () =>
   Yup.object().shape({
-    email: Yup.string().email('Invalid email format').required('Email address is required'),
-    username: Yup.string().min(5, 'Username must be at least 5 characters').required('Username is required'),
-    fullName: Yup.string().min(5, 'Full Name must be at least 5 characters').required('Full Name is required'),
     password: Yup.string()
       .required('Password is required')
       .min(8, 'Password must be at least 8 characters')
@@ -35,29 +33,33 @@ const validationSchema = () =>
       .required(() => 'Please confirm password'),
   });
 
-const initialValues: SignUpData = {
-  username: '',
-  fullName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
+interface Props {
+  token: string;
+}
 
-const SignUpForm: FC = () => {
+const NewPasswordForm: FC<Props> = ({ token }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const initialValues: ResetPasswordData = {
+    token,
+    password: '',
+    confirmPassword: '',
+  };
 
   const handleSubmit = async (
-    values: SignUpData,
-    { resetForm, setSubmitting, setErrors }: FormikHelpers<SignUpData>,
+    values: ResetPasswordData,
+    { resetForm, setSubmitting, setErrors }: FormikHelpers<ResetPasswordData>,
   ) => {
     dispatch(
-      signUp({
+      resetPassword({
         payload: values,
         onSuccess: () => {
           setSubmitting(false);
           resetForm();
+          navigate(RouteEnum.SIGN_IN);
         },
-        onError: (errors: FormikErrors<SignUpData>) => {
+        onError: (errors: FormikErrors<ResetPasswordData>) => {
           setSubmitting(false);
           setErrors(errors);
         },
@@ -69,13 +71,10 @@ const SignUpForm: FC = () => {
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} validateOnBlur>
       {({ isSubmitting }) => (
         <StyledForm>
-          <TextField placeholder="Email" name="email" fullWidth />
-          <TextField placeholder="Full Name" name="fullName" fullWidth />
-          <TextField placeholder="Username" name="username" fullWidth />
           <PasswordField placeholder="Password" name="password" fullWidth />
           <PasswordField placeholder="Conform Password" name="confirmPassword" fullWidth />
           <Button sx={{ mt: 1 }} type="submit" variant="contained" loading={isSubmitting} fullWidth>
-            Sign up
+            Change password
           </Button>
         </StyledForm>
       )}
@@ -83,4 +82,4 @@ const SignUpForm: FC = () => {
   );
 };
 
-export default SignUpForm;
+export default NewPasswordForm;

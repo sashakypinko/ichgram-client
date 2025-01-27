@@ -3,6 +3,7 @@ export enum RouteEnum {
   SIGN_IN = '/sign-in',
   SIGN_UP = '/sign-up',
   PASSWORD_RECOVERY = '/password-recovery',
+  RESET_PASSWORD = '/reset-password',
   DIRECT = '/direct',
   DIRECT_CONVERSATION = '/direct/:id',
   EXPLORE = '/explore',
